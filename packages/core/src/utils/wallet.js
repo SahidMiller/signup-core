@@ -2,15 +2,8 @@ const slpjs = require("slpjs");
 const BITBOX = require("bitbox-sdk").BITBOX;
 const bitbox = new BITBOX();
 
-const bitboxWithSLP = new slpjs.BitboxNetwork(bitbox);
-
 import * as Sentry from "@sentry/browser";
-import axios from "axios";
 import localforage from "localforage";
-import VanillaQR from "./vanillaQR";
-import { heightModifier, isDevEnv } from "../config";
-import { getBCHPrice } from "./price";
-import { memoize } from "./helpers";
 import { BITCOIN_NETWORK, WALLET_HD_PATH } from '../config'
 function q(selector, el) {
   if (!el) {

@@ -3,12 +3,16 @@
   "version": "0.8.0",
   "description": "A non-custodial easy-to-use platform to build DApps on top of Bitcoin Cash blockchain",
   "main": "index.js",
+  "private": true,
   "scripts": {
-    "dev": "lerna run dev --stream --profile",
-    "build:dev": "lerna run build:dev --stream",
-    "build": "lerna run build --stream",
+    "dev": "npx workspaces-run --continue-on-error --parallel -- npm run dev",
+    "build:dev": "npx workspaces-run --continue-on-error --parallel -- npm run build:dev",
+    "build": "npx workspaces-run --continue-on-error --parallel -- npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "workspaces": [
+    "packages\\*"
+  ],
   "keywords": [
     "bch",
     "bitcoin",
@@ -22,7 +26,34 @@
   "author": "p0o",
   "license": "MPL-2.0",
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
+    "babel-polyfill": "^6.26.0",
+    "clean-webpack-plugin": "*",
     "concurrently": "^5.3.0",
-    "lerna": "^3.22.1"
+    "cross-env": "^7.0.3",
+    "css-loader": "^3.6.0",
+    "file-loader": "^6.1.0",
+    "html-webpack-plugin": "^5.3.1",
+    "jest": "^26.4.2",
+    "kill-port": "^1.6.1",
+    "lerna": "^3.22.1",
+    "node-polyfill-webpack-plugin": "^1.1.2",
+    "style-loader": "^1.3.0",
+    "terser-webpack-plugin": "^4.2.2",
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0",
+    "webpack-merge": "^5.7.3",
+    "webpack-plugin-serve": "^1.4.1",
+    "workspaces-run": "^1.0.1"
+  },
+  "dependencies": {
+    "@signupcash/core": "file:packages\\core",
+    "@signupcash/provider": "file:packages\\provider",
+    "@signupcash/shell": "file:packages\\shell",
+    "@signupcash/utils": "file:packages\\utils"
   }
 }

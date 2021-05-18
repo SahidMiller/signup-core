@@ -1,31 +1,15 @@
 const path = require("path");
-const { WebpackPluginServe } = require('webpack-plugin-serve')
+const merge = require('../../default-webpack.config.js')
 
-const isDevEnv = process.env.NODE_ENV === "development"
-const serveApp = isDevEnv && process.env.FORCE_SERVE_APP === "true" && process.env.FORCE_SERVE_APP !== "false"
-
-const serveEntry = serveApp ? { serve: "webpack-plugin-serve/client" } : {}
-const servePlugins = serveApp ? [new WebpackPluginServe({ port: 5000, static: "./" })] : []
-
-module.exports = {
+module.exports = merge({
   entry: {
-    client: "./src/provider.js",
-    ...serveEntry
+    provider: "./src/provider.js",
   },
-  mode: process.env.NODE_ENV,
-  watch: isDevEnv,
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "provider.js",
+    filename: "[name].js",
     library: "Signup",
     libraryTarget: "umd",
-  },
-  devtool: "source-map",
-  watchOptions: {
-    ignored: /node_modules/,
-  },
-  stats: {
-    warnings: isDevEnv,
   },
   module: {
     rules: [
@@ -40,8 +24,5 @@ module.exports = {
         },
       },
     ],
-  },
-  plugins: [
-    ...servePlugins
-  ]
-};
+  }
+}, { port: 5000, static: "./" });

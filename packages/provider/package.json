@@ -11,7 +11,6 @@
   "scripts": {
     "start": "serve ./ -l 5000",
     "build:dev": "npx cross-env NODE_ENV=development FORCE_SERVE_APP=false webpack",
-    "dev": "npx cross-env NODE_ENV=development webpack",
     "build": "npx cross-env NODE_ENV=production webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build"
@@ -31,16 +30,6 @@
   ],
   "author": "p0o",
   "license": "MPL-2.0",
-  "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.11.5",
-    "babel-loader": "^8.1.0",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "cross-env": "^7.0.3",
-    "webpack": "^4.44.2",
-    "webpack-plugin-serve": "^1.4.1"
-  },
   "dependencies": {
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",

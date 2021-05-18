@@ -1,0 +1,22 @@
+{
+  "name": "@signupcash/shell",
+  "version": "0.0.1",
+  "description": "",
+  "main": "public/index.html",
+  "scripts": {
+    "build": "npx cross-env NODE_ENV=production webpack",
+    "build:dev": "npx cross-env NODE_ENV=development FORCE_SERVE_APP=false webpack",
+    "dev": "npx cross-env NODE_ENV=development webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "p0o",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "delay": "^4.4.0",
+    "p-retry": "^4.2.0",
+    "regenerator-runtime": "^0.13.7",
+    "@babel/plugin-transform-react-jsx": "^7.10.4",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3"
+  }
+}

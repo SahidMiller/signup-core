@@ -5,9 +5,9 @@ const merge = require('../../default-webpack.config.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-module.exports = merge({
+module.exports = [merge({
   entry: {
-    core: "./src/index.js"
+    shell: "./src/index.js"
   },
   output: {
     path: path.resolve(__dirname, "public"),
@@ -28,17 +28,28 @@ module.exports = merge({
     ]
   },
   plugins: [
-    new CleanWebpackPlugin({}),
+    new HtmlWebpackPlugin({
+      template:  path.join(__dirname, './views/index.html'),
+      filename: 'index.html',
+      publicPath: './',
+      inlineSource: '.(css)$',
+      chunks:["shell"]
+    }), 
     //http://localhost:5050/pluginEntry.js
     new ModuleFederationPlugin({
         name: "SignupCore",
-        filename: "js/signupCoreEntry.js",
-        exposes: {
-            ".": path.join(__dirname, "./src/index.js"),
-        }
+        filename: "js/shellEntry.js"
     })
   ]
 }, { 
-  port: 5051, 
+  port: 5050, 
   static: path.join(__dirname, "./public") 
-})
+}), merge({
+  entry: {
+    worker: "./src/worker/worker.js"
+  },
+  output: {
+    path: path.resolve(__dirname, "public"),
+    filename: "js/[name].lib.js",
+  }
+})]
