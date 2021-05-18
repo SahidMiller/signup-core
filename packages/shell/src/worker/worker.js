@@ -7,18 +7,18 @@ import {
   storeSpending,
   getWalletSpendingsBySessionId,
   signPayload,
-} from "../../../core/src/utils/wallet";
+} from "../../../wallet/src/utils/wallet";
 import {
   isInSatoshis,
   isInBCH,
   fiatToBCH,
   fiatToSats,
   sats,
-} from "../../../core/src/utils/unitUtils";
-import { sendBchTx } from "../../../core/src/utils/transactions";
-import { decodeToken } from "../../../core/src/utils/permission";
+} from "../../../wallet/src/utils/unitUtils";
+import { sendBchTx } from "../../../wallet/src/utils/transactions";
+import { decodeToken } from "../../../wallet/src/utils/permission";
 import axios from "axios";
-import { SIGNUP_TX_BRIDGE } from "../../../core/src/config";
+import { SIGNUP_TX_BRIDGE } from "../../../wallet/src/config";
 
 let latestUtxos = [];
 let latestSatoshisBalance;

@@ -4,6 +4,8 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const webpack = require('webpack')
 const { merge } = require('webpack-merge')
 
+require('dotenv').config()
+
 const isDevEnv = process.env.NODE_ENV === "development"
 
 module.exports = mergeWithCommonConfig
