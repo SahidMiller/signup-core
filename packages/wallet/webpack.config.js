@@ -2,12 +2,11 @@ const path = require("path");
 const webpack = require('webpack')
 const { ModuleFederationPlugin } = webpack.container;
 const merge = require('../../default-webpack.config.js')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = merge({
   entry: {
-    core: "./src/index.js"
+    core: path.resolve(__dirname, "./src/index.js")
   },
   output: {
     path: path.resolve(__dirname, "public"),
@@ -22,6 +21,21 @@ module.exports = merge({
           loader: "babel-loader",
           options: {
             presets: ["@babel/preset-env"],
+            plugins: [
+              [
+                "@babel/plugin-transform-react-jsx",
+                {
+                  "pragma": "h",
+                  "pragmaFrag": "Fragment"
+                }
+              ], 
+              [
+                "transform-inline-environment-variables",
+                {
+                  "include": ["NODE_ENV", "WALLET_HD_PATH", "BITCOIN_NETWORK", "FORCE_IPFS"]
+                }
+              ]
+            ]
           },
         },
       }
