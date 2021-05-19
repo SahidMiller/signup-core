@@ -1,23 +1,29 @@
-# Signup Core
+<p align="center">
+  <img alt="Signup - connect to decentralized BCH apps" src="https://wallet.signup.cash/images/d5a76ca08b243c34ed90724ea154e459.png"></img>
+</p>
+<p align="center">This branch demonstrates a dweb version of Signup.cash using peer-to-peer technology (via IPFS/IPNS/Libp2p).</p>
+<hr>
+<br>
 
-This branch includes code to demonstrate a dweb version of Signup.cash using peer-to-peer technology via IPFS/IPNS/Libp2p.
-## IPFS 
+The approach taken by this project is to **allow users to opt-in** IPNS rather than opt-out and instead, support security focused dweb users first by making simple IPFS usage the flag-ship feature.
 
-This project opts out of using IPNS on the user facing side and instead separates out a basic app shell from more often changing code (ie. plugins). The [app shell](https://github.com/SahidMiller/signup-core/tree/ipfs-app-shell/packages/shell) is a simple webpack host application that dynamically loads wallet code via IPNS and locks the version in until the user decides to update it, in which case, it still won't affect the app shell CID since it's dynamic.
+**In other words, this application treats CIDs as a feature rather than a bug.**
 
-Users are expected to evaluate if the app shell meets their security needs and if it suits their needs, they can continue using it until they choose to upgrade or use another CID that fits their needs.
+## Strategy
 
-In other words, this application treats CIDs as a feature rather than a UX bug.
+The UX strategy is to provide a basic [app shell](https://github.com/SahidMiller/signup-core/tree/ipfs-app-shell/packages/shell) that *shouldn't* change often but still fetches *more often changing* code (ie. plugins) from IPFS (dynamically, verifiably, and offline-capable via IPNS records)
 
-## Module federation
+Any change to the app shell code will result in a **visibly different hash to the user and without access to previous localstorage** (when using hostname based IPFS gateway). It will be responsible for:
 
-This project leverages Webpack Dynamic [Module Federation](https://webpack.js.org/concepts/module-federation/) to separate the often changing wallet code from a basic app shell.
+1) On first visit, the app shell will fetch, store and forever lock in the latest plugin CID up until the user gives permission to update to a newer CID.
+2) On subsequent visits or while in app, the app shell can fetch updated plugin CIDs from developers (verifiably and offline-capable via IPNS) and display to a user that an update is available.
+3) (TODO God willing) Before fetching plugin scripts using the stored CIDs, verify that the user gave permission by validating signature in case storage tampered with maliciously by plugin.
 
-This is useful for a number of reasons with our use case:
+So ultimately, **users will have choice** about what to load, who from, and when to update, if the app shell works as expected.
 
-1) The app shell will have a static CID that's visually verifiable which is useful whether you use a gateway you own or not.
-2) By having plugin code fetched via CID, the app shell can fetch and verify version by simply persisting the CID (possibly signed by user) so it only changes when the user requests it.
-3) Developers can create their own app shell and leverage the wallet code in a similar way as this project's app shell.
+Security focused users can to evaluate if the app shell meets their security needs and if it does, they can continue using it exclusively until they choose to upgrade or use another CID that fits their needs.
+
+<br>
 
 ## IPNS
 
@@ -30,6 +36,20 @@ This project leverages IPNS to publish latest CIDs of each project.
 2) Allows older code to fetch newer hashes verifiably. 
     a) For example, when the provider app is embedded using IPFS url (not ipns) they can still verifiably fetch and launch the latest app shell CID for new users. (TODO God willing: add tab to app shell or wallet to allow users to set a redirect back to an older app shell automatically on their preferred gateway).
     b) For example, when the app shell is launched using IPFS url (not ipns) users can still verifiably fetch the latest app shell, wallet, and plugin CIDs and be notified they're available! (users can verify app shell doesn't launch code without getting permission from user)
+
+<br>
+
+## Module federation
+
+This project leverages Webpack Dynamic [Module Federation](https://webpack.js.org/concepts/module-federation/) to separate the often changing wallet code from a basic app shell.
+
+This is useful for a number of reasons with our use case:
+
+1) The app shell will have a static CID that's visually verifiable which is useful whether you use a gateway you own or not.
+2) By having plugin code fetched via CID, the app shell can fetch and verify version by simply persisting the CID (possibly signed by user) so it only changes when the user requests it.
+3) Developers can create their own app shell and leverage the wallet code in a similar way as this project's app shell whether IPFS or IPNS.
+
+<br>
 
 ### Building
 
