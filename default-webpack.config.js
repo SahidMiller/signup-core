@@ -3,8 +3,11 @@ const { WebpackPluginServe } = require('webpack-plugin-serve')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const webpack = require('webpack')
 const { merge } = require('webpack-merge')
+const path = require('path')
 
-require('dotenv').config()
+require('dotenv').config({ 
+  path: path.join(__dirname, "/.env") 
+})
 
 const isDevEnv = process.env.NODE_ENV === "development"
 

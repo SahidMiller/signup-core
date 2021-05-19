@@ -3,3 +3,4 @@ public
 client/dist
 node_modules
 lerna-debug.log
+.env
