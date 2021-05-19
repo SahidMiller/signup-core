@@ -2,11 +2,11 @@
   "name": "@signupcash/shell",
   "version": "0.0.1",
   "description": "",
-  "main": "public/index.html",
+  "main": "dist/dagEntry.js",
   "scripts": {
-    "build": "rm -rf ./public && npx cross-env NODE_ENV=production webpack",
-    "build:dev": "rm -rf ./public && npx cross-env NODE_ENV=development FORCE_SERVE_APP=false webpack",
-    "dev": "rm -rf ./public && npx cross-env NODE_ENV=development webpack",
+    "build": "rm -rf ./public && rm -rf ./dist && npx cross-env NODE_ENV=production webpack",
+    "build:dev": "rm -rf ./public && rm -rf ./dist && npx cross-env NODE_ENV=development FORCE_SERVE_APP=false webpack",
+    "dev": "rm -rf ./public && rm -rf ./dist && npx cross-env NODE_ENV=development webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "p0o",
@@ -18,5 +18,8 @@
     "idb-keyval": "^5.0.5",
     "p-retry": "^4.2.0",
     "regenerator-runtime": "^0.13.7"
+  },
+  "key": {
+    "pubkey": "k51qzi5uqu5dkilythsa3bogazy06fpc929xlke6rkihrcq4os2le5c5pw8khf"
   }
 }

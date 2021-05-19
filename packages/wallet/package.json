@@ -2,11 +2,11 @@
   "name": "@signupcash/wallet",
   "version": "1.2.1",
   "description": "",
-  "main": "public/index.html",
+  "main": "dist/dagEntry.js",
   "scripts": {
-    "build": "rm -rf ./public npx cross-env NODE_ENV=production webpack",
-    "build:dev": "rm -rf ./public && npx cross-env NODE_ENV=development FORCE_SERVE_APP=false webpack",
-    "dev": "rm -rf ./public && npx cross-env NODE_ENV=development webpack",
+    "build": "rm -rf ./public && rm -rf ./dist && npx cross-env NODE_ENV=production webpack",
+    "build:dev": "rm -rf ./public && rm -rf ./dist && npx cross-env NODE_ENV=development FORCE_SERVE_APP=false webpack",
+    "dev": "rm -rf ./public && rm -rf ./dist && npx cross-env NODE_ENV=development webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "p0o",
@@ -43,5 +43,8 @@
     "slp-mdm": "0.0.7",
     "slpjs": "^0.27.11",
     "uuid": "^8.3.1"
+  },
+  "key": {
+    "pubkey": "k51qzi5uqu5dgag0pfgxzsr6rpk3egk9gmmt3xn79568uipkp1d0v0wc60lgsh"
   }
 }

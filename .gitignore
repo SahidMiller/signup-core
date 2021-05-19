@@ -1,6 +1,6 @@
 .DS_Store
 public
-client/dist
+dist
 node_modules
 lerna-debug.log
 .env

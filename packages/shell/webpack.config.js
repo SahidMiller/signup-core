@@ -1,6 +1,7 @@
 const path = require("path");
 const merge = require('../../default-webpack.config.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const DagEntryPlugin = require("webpack-dag-entry-plugin")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = merge({
@@ -37,6 +38,10 @@ module.exports = merge({
   },
   plugins: [
     new CleanWebpackPlugin({}),
+    new DagEntryPlugin({
+      path: path.resolve(__dirname, "./public"),
+      filename: "../dist/dagEntry.js"
+    }),
     new HtmlWebpackPlugin({
       template:  path.join(__dirname, './views/index.html'),
       filename: 'index.html',

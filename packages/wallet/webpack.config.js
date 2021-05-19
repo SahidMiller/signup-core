@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const { ModuleFederationPlugin } = webpack.container;
 const merge = require('../../default-webpack.config.js')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const DagEntryPlugin = require('webpack-dag-entry-plugin')
 
 module.exports = merge({
   entry: {
@@ -43,6 +44,11 @@ module.exports = merge({
   },
   plugins: [
     new CleanWebpackPlugin({}),
+    new DagEntryPlugin({
+      path: path.join(__dirname, "./public"),
+      glob: '**/*',
+      filename: '../dist/dagEntry.js',
+    }),
     //http://localhost:5050/pluginEntry.js
     new ModuleFederationPlugin({
         name: "SignupCore",

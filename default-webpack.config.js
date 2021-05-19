@@ -48,9 +48,6 @@ function mergeWithCommonConfig(config, { port, static, analyzerPort } = {}) {
     mode: process.env.NODE_ENV,
     watch: isDevEnv,
     devtool: "source-map",
-    watchOptions: {
-      ignored: /node_modules/,
-    },
     optimization: {
       minimizer: [
         new TerserPlugin({

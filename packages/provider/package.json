@@ -31,8 +31,13 @@
   "author": "p0o",
   "license": "MPL-2.0",
   "dependencies": {
+    "@signupcash/shell": "^0.0.1",
+    "@signupcash/wallet": "^1.2.1",
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "emotion": "^10.0.27"
+  },
+  "key": {
+    "pubkey": "k51qzi5uqu5dkyt9pd06x7q82m3eaf5uefo6dg0cf8jqi5oxa9g1q9t0izaxvf"
   }
 }

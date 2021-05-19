@@ -1,18 +1,21 @@
 import "babel-polyfill";
 import axios from "axios";
 import { css } from "emotion";
-import { isCashAddress } from "../../core/src/utils/unitUtils";
-import { DUST } from "../../core/src/config";
+import { isCashAddress } from "../../wallet/src/utils/unitUtils";
+import { DUST } from "../../wallet/src/config";
 
-const SIGNUP_ORIGIN =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5050"
-    : "https://wallet.signup.cash";
+import { cid as SIGNUP_WALLET_CID } from '@signupcash/wallet'
+import { cid as SIGNUP_SHELL_CID } from '@signupcash/shell'
 
-const SIGNUP_TX_BRIDGE =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5044"
-    : "https://bridge.signup.cash";
+const isDevEnv = process.env.NODE_ENV === "development"
+const isIpfsEnv = !isDevEnv || process.env.FORCE_IPFS === "true"
+const gatewayHost = process.env.IPFS_GATEWAY_HOST || "https://gateway.ipfs.io"
+//TODO God willing: pass latest wallet cid to avoid IPNS call?
+const signupIpfsOrigin = gatewayHost + "/ipfs/" + SIGNUP_SHELL_CID + "?latestWallet=" + SIGNUP_WALLET_CID
+const signupDevOrigin = process.env.SIGNUP_ORIGIN || isDevEnv ? "http://localhost:5050" : "https://wallet.signup.cash";
+
+const SIGNUP_ORIGIN = isIpfsEnv ? signupIpfsOrigin : signupDevOrigin
+const SIGNUP_TX_BRIDGE = process.env.NODE_ENV === "development" ? "http://localhost:5044" : "https://bridge.signup.cash";
 
 const isPhone = window.innerWidth < 625;
 const LOGIN_URL = SIGNUP_ORIGIN + "/";
