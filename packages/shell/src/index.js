@@ -1,5 +1,6 @@
 import "regenerator-runtime";
 import { get, set } from 'idb-keyval'
+import { SIGNUP_LAST_USED_IPFS_PATH, SIGNUP_LATEST_AVAILABLE_IPFS_PATH } from '../../wallet/src/config'
 
 const isDevEnv = process.env.NODE_ENV === "development"
 const IPFS_GATEWAY_HOST = process.env.IPFS_GATEWAY_HOST || "http://gateway.ipfs.io:5001"
@@ -22,9 +23,6 @@ async function loadComponent(scope, module) {
     return Module;
 }
 
-//TODO God willing, fetch from localstorage the previous IPNS hash
-// load that CID from preferred gateway, God willing.
-// Check for updated CID from same IPNS hash
 async function scriptPromise(src) { 
   
   return await new Promise((resolve, reject) => {
@@ -46,19 +44,24 @@ async function resolveLatestIpns(address, nocache) {
 }
 
 async function setup() {
-  //Load the script using env variable or IPNS, God willing
+  
+  //Load the script using env variable if ipfs isn't forced and is dev env
   if (!process.env.FORCE_IPFS && isDevEnv) {
+  
     await scriptPromise(SIGNUP_WALLET_ENTRY_HOST)
+  
   } else {
     
-    const lastUsedSignupIpfsPath = await get("SIGNUP_LAST_USED_IPFS_PATH")
+    //Otherwise, get last used IPFS path OR latest available ipfs path (from configured gateway)
+    //TODO God willing, configure gateway to fetch IPNS from
+    const lastUsedSignupIpfsPath = await get(SIGNUP_LAST_USED_IPFS_PATH)
     
     const latestAvailableSignupIpfsPath = resolveLatestIpns(SIGNUP_WALLET_IPNS).then(async (ipfsPath) => {
-      set("SIGNUP_LATEST_AVAILABLE_IPFS_PATH", ipfsPath)
+      set(SIGNUP_LATEST_AVAILABLE_IPFS_PATH, ipfsPath)
 
-      //TODO God willing: allow updates to last used by displaying updated CID is available, God willing
+      //TODO God willing: Plugins could technically set this (and maybe wallet app should), so verify signature?
       if (!lastUsedSignupIpfsPath) {
-        await set("SIGNUP_LAST_USED_IPFS_PATH", ipfsPath)
+        await set(SIGNUP_LAST_USED_IPFS_PATH, ipfsPath)
       }
 
       return ipfsPath

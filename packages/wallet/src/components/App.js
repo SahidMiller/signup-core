@@ -1,8 +1,10 @@
 import { h, Fragment } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import Router from "preact-router";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { css } from "emotion";
+import { get, set } from "idb-keyval"
+
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import {
@@ -24,6 +26,8 @@ import Contributions from "./wallet/Contributions";
 import Home from "./home/Home";
 import WithUtxos from "./WithUtxos";
 
+import { SIGNUP_LAST_USED_IPFS_PATH, SIGNUP_LATEST_AVAILABLE_IPFS_PATH, SIGNUP_USED_IPFS_PATHS } from '../config.js'
+
 import "../css/base.css";
 
 Sentry.init({
@@ -38,6 +42,9 @@ Sentry.init({
 
 function App() {
   const [clientPayload, setClientPayload] = useState({});
+  const [availableUpdate, setAvailableUpdate] = useState(false)  
+  const [currentIpfsPath, setCurrentIpfsPath] = useState(null)
+
   let nonce = 0;
 
   useEffect(() => {
@@ -79,6 +86,42 @@ function App() {
       workerCourier("current_origin", { origin: clientPayload.origin });
     }
   }, [clientPayload]);
+
+  useEffect(async () => {
+
+    if (process.env.NODE_ENV !== "development" || Boolean(process.env.FORCE_IPFS)) {
+      
+      const currentIpfsPath = await get(SIGNUP_LAST_USED_IPFS_PATH)
+      const latestAvailableSignupIpfsPath = await get(SIGNUP_LATEST_AVAILABLE_IPFS_PATH)
+
+      if (currentIpfsPath !== latestAvailableSignupIpfsPath) {
+        setAvailableUpdate(latestAvailableSignupIpfsPath)
+      }
+
+      setCurrentIpfsPath(currentIpfsPath)
+    }
+  })
+
+  useEffect(async () => {
+    if (availableUpdate) {
+      toast.info("Update available!", {
+        onClick: async () => {
+          
+          const walletHashHistory = Array.from(
+            new Set([
+              ...(await get(SIGNUP_USED_IPFS_PATHS) || []),
+              currentIpfsPath
+            ])
+          )
+          
+          await set(SIGNUP_LAST_USED_IPFS_PATH, availableUpdate)
+          await set(SIGNUP_USED_IPFS_PATHS, walletHashHistory)
+          
+          window.location.reload()
+        }
+      })
+    }
+  }, [availableUpdate])
 
   return (
     <>

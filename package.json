@@ -52,7 +52,6 @@
     "workspaces-run": "^1.0.1"
   },
   "dependencies": {
-    "@signupcash/core": "file:packages\\core",
     "@signupcash/provider": "file:packages\\provider",
     "@signupcash/shell": "file:packages\\shell",
     "@signupcash/utils": "file:packages\\utils"
