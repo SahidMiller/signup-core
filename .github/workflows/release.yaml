@@ -36,6 +36,10 @@ jobs:
           echo "::set-output name=provider-hash::$(ipfs add -rQ ./packages/provider/dist)"
       - name: Check packages on public gateway
         run: |
+          curl --write-out 'App Shell IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://localhost:8080/ipfs/${{ steps.ipfs.outputs.shell-hash }} & \
+          curl --write-out 'Wallet IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://localhost:8080/ipfs/${{ steps.ipfs.outputs.wallet-hash }} & \
+          curl --write-out 'Provider IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://localhost:8080/ipfs/${{ steps.ipfs.outputs.provider-hash }}
+
           curl --write-out 'App Shell IPFS Status: %{http_code}\n' --silent --output /dev/null --fail https://ipfs.io/ipfs/${{ steps.ipfs.outputs.shell-hash }} & \
           curl --write-out 'Wallet IPFS Status: %{http_code}\n' --silent --output /dev/null --fail https://ipfs.io/ipfs/${{ steps.ipfs.outputs.wallet-hash }} & \
           curl --write-out 'Provider IPFS Status: %{http_code}\n' --silent --output /dev/null --fail https://ipfs.io/ipfs/${{ steps.ipfs.outputs.provider-hash }}
