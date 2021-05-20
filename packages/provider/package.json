@@ -31,8 +31,8 @@
   "author": "p0o",
   "license": "MPL-2.0",
   "dependencies": {
-    "@signupcash/shell": "^0.0.1",
-    "@signupcash/wallet": "^1.2.1",
+    "@signupcash/shell": "0.0.1",
+    "@signupcash/wallet": "1.2.1",
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "emotion": "^10.0.27"
