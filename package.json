@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "install": "yarn install && npx lerna bootstrap",
+    "install": "lerna bootstrap",
     "dev": "npx lerna run dev --parallel --stream",
     "build:dev": "npx lerna run build:dev --parallel --stream",
     "build": "npx lerna run build --stream",
