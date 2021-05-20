@@ -37,7 +37,7 @@
     "babel-polyfill": "^6.26.0",
     "emotion": "^10.0.27"
   },
-  "key": {
+  "web3": {
     "pubkey": "k51qzi5uqu5dkyt9pd06x7q82m3eaf5uefo6dg0cf8jqi5oxa9g1q9t0izaxvf"
   }
 }

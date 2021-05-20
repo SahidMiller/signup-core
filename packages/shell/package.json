@@ -19,7 +19,7 @@
     "p-retry": "^4.2.0",
     "regenerator-runtime": "^0.13.7"
   },
-  "key": {
+  "web3": {
     "pubkey": "k51qzi5uqu5dkilythsa3bogazy06fpc929xlke6rkihrcq4os2le5c5pw8khf"
   }
 }
