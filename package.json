@@ -51,8 +51,9 @@
     "webpack-plugin-serve": "^1.4.1"
   },
   "dependencies": {
-    "@signupcash/provider": "link:packages\\provider",
     "@signupcash/shell": "link:packages\\shell",
+    "@signupcash/wallet": "link:packages\\wallet",
+    "@signupcash/provider": "link:packages\\provider",
     "@signupcash/utils": "link:packages\\utils"
   }
 }
