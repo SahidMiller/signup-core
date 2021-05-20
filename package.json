@@ -5,7 +5,6 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "install": "lerna bootstrap",
     "dev": "npx lerna run dev --parallel --stream",
     "build:dev": "npx lerna run build:dev --parallel --stream",
     "build": "npx lerna run build --stream",
@@ -52,8 +51,8 @@
     "webpack-plugin-serve": "^1.4.1"
   },
   "dependencies": {
-    "@signupcash/provider": "file:packages\\provider",
-    "@signupcash/shell": "file:packages\\shell",
-    "@signupcash/utils": "file:packages\\utils"
+    "@signupcash/provider": "link:packages\\provider",
+    "@signupcash/shell": "link:packages\\shell",
+    "@signupcash/utils": "link:packages\\utils"
   }
 }
