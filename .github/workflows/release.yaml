@@ -12,7 +12,7 @@ jobs:
           node-version: '14'
           check-latest: true
       - name: Install packages
-        run: npm install
+        run: npm run install
       - name: Build project
         run: npm run build
       - name: Start IPFS
