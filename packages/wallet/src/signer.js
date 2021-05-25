@@ -1,17 +1,3 @@
-import BigNumber from "bignumber.js";
-
-import bitbox from "./libs/bitbox";
-import {
-  isUserWalletExist,
-  getWalletAddr,
-  getWalletHdNode,
-} from "./utils/wallet";
-import {
-  isInSatoshis,
-  convertAmountToBCHUnit,
-  convertAmountToSatoshiUnits,
-} from "./utils/unitUtils";
-
 let myWorker;
 let workerEventListeners = [];
 

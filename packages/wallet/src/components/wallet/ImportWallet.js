@@ -21,7 +21,7 @@ export default function () {
 
   useEffect(() => {
     (async () => {
-      setWalletExist(await wallet.isUserWalletExist());
+      setWalletExist(await wallet.doesWalletExist());
     })();
   }, []);
 
@@ -41,7 +41,7 @@ export default function () {
 
     (async () => {
       // second check to make sure really no wallet exist here!
-      const walletExist = await wallet.isUserWalletExist();
+      const walletExist = await wallet.doesWalletExist();
       if (walletExist) {
         toast.error("A wallet already exist! You need to logout first.");
         return;

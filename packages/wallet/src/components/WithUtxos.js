@@ -5,7 +5,7 @@ import * as slpjs from "slpjs";
 import {
   getWalletSLPAddr,
   getWalletAddr,
-  isUserWalletExist,
+  doesWalletExist,
   freezeUtxo,
   unfreezeUtxo,
 } from "../utils/wallet";

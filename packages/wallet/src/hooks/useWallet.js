@@ -8,7 +8,7 @@ export default function useWallet() {
 
   useEffect(() => {
     (async () => {
-      const doesWalletExist = await wallet.isUserWalletExist();
+      const doesWalletExist = await wallet.doesWalletExist();
       const myBchAddr = await wallet.getWalletAddr();
       const mySlpAddr = await wallet.getWalletSLPAddr();
 

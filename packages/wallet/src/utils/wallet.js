@@ -46,7 +46,7 @@ export async function retrieveWalletCredentials() {
   return { userWallet, isVerified };
 }
 
-export async function isUserWalletExist() {
+export async function doesWalletExist() {
   const { userWallet, isVerified } = await retrieveWalletCredentials();
   return Boolean(userWallet && isVerified);
 }
