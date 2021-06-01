@@ -12,21 +12,16 @@ import {
   initWorker,
   workerCourier,
 } from "../signer";
-import NewWallet from "./new-wallet/NewWallet";
 import Topup from "./wallet/Topup";
 import Send from "./wallet/Send";
 import Backup from "./wallet/Backup";
-import Logout from "./wallet/Logout";
-import ImportWallet from "./wallet/ImportWallet";
 import SLPTokens from "./wallet/SLPTokens";
 import NFTs from "./wallet/NFTs";
 import TokenPage from "./wallet/TokenPage";
 import Contributions from "./wallet/Contributions";
 
-import Home from "./home/Home";
+import Home from "./wallet/WalletHome";
 import WithUtxos from "./WithUtxos";
-
-import { SIGNUP_LAST_USED_IPFS_PATH, SIGNUP_LATEST_AVAILABLE_IPFS_PATH, SIGNUP_USED_IPFS_PATHS } from '../config.js'
 
 import "../css/base.css";
 
@@ -42,9 +37,6 @@ Sentry.init({
 
 function App() {
   const [clientPayload, setClientPayload] = useState({});
-  const [availableUpdate, setAvailableUpdate] = useState(false)  
-  const [currentIpfsPath, setCurrentIpfsPath] = useState(null)
-
   let nonce = 0;
 
   useEffect(() => {
@@ -87,52 +79,13 @@ function App() {
     }
   }, [clientPayload]);
 
-  useEffect(async () => {
-
-    if (process.env.NODE_ENV !== "development" || Boolean(process.env.FORCE_IPFS)) {
-      
-      const currentIpfsPath = await get(SIGNUP_LAST_USED_IPFS_PATH)
-      const latestAvailableSignupIpfsPath = await get(SIGNUP_LATEST_AVAILABLE_IPFS_PATH)
-
-      if (currentIpfsPath !== latestAvailableSignupIpfsPath) {
-        setAvailableUpdate(latestAvailableSignupIpfsPath)
-      }
-
-      setCurrentIpfsPath(currentIpfsPath)
-    }
-  })
-
-  useEffect(async () => {
-    if (availableUpdate) {
-      toast.info("Update available!", {
-        onClick: async () => {
-          
-          const walletHashHistory = Array.from(
-            new Set([
-              ...(await get(SIGNUP_USED_IPFS_PATHS) || []),
-              currentIpfsPath
-            ])
-          )
-          
-          await set(SIGNUP_LAST_USED_IPFS_PATH, availableUpdate)
-          await set(SIGNUP_USED_IPFS_PATHS, walletHashHistory)
-          
-          window.location.reload()
-        }
-      })
-    }
-  }, [availableUpdate])
-
   return (
     <>
       <Router>
-        <Home path="/" clientPayload={clientPayload} />
-        <NewWallet path="/new-wallet" clientPayload={clientPayload} />
+        <Home path="/" clientPayload={clientPayload} default/>
         <Topup path="/top-up" clientPayload={clientPayload} />
         <Send path="/send" clientPayload={clientPayload} />
         <Backup path="/backup" />
-        <Logout path="/logout" />
-        <ImportWallet path="/import" />
         <SLPTokens path="/tokens" />
         <NFTs path="/NFTs" />
         <TokenPage path="/token" />

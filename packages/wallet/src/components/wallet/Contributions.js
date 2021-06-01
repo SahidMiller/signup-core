@@ -5,10 +5,10 @@ import { Link } from "preact-router";
 import { css } from "emotion";
 import { toast } from "react-toastify";
 
-import Heading from "../common/Heading";
-import Button from "../common/Button";
-import Article from "../common/Article";
-import TextArea from "../common/TextArea";
+import Heading from "signup-app/Heading";
+import Button from "signup-app/Button";
+import Article from "signup-app/Article";
+import TextArea from "signup-app/TextArea";
 
 import { UtxosContext } from "../WithUtxos";
 import { sendCommitmentTx, sendBchTx, feesFor } from "../../utils/transactions"

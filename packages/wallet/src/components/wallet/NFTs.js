@@ -3,13 +3,13 @@ import { useState, useEffect, useContext } from "preact/hooks";
 import { Link, route } from "preact-router";
 import axios from "axios";
 import { css } from "emotion";
-import Logo from "../common/Logo";
-import Article from "../common/Article";
-import Heading from "../common/Heading";
-import Button from "../common/Button";
+import Logo from "signup-app/Logo";
+import Article from "signup-app/Article";
+import Heading from "signup-app/Heading";
+import Button from "signup-app/Button";
 import { getSlpBalances, getSlpByTokenId } from "../../utils/slp";
 import { getWalletSLPAddr } from "../../utils/wallet";
-import Loading from "../common/Loading";
+import Loading from "signup-app/Loading";
 import NFTImage from "./NFTImage";
 import { UtxosContext } from "../WithUtxos";
 

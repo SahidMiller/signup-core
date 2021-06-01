@@ -51,14 +51,39 @@ module.exports = merge({
     }),
     //http://localhost:5050/pluginEntry.js
     new ModuleFederationPlugin({
-        name: "SignupCore",
+        name: "signupCore",
         filename: "js/signupCoreEntry.js",
         exposes: {
-            ".": path.join(__dirname, "./src/index.js"),
+          ".": path.join(__dirname, "./src/components.js"),
+        },
+        remotes: {
+          "signup-app": "signupApp@"
+        },
+        shared: {
+          "bitbox-sdk": {
+            import: "bitbox-sdk",
+            singleton: true,
+          }, 
+          "preact": {
+            import: "preact",
+            singleton: true,
+          }, 
+          "preact-compat": {
+            import: "preact-compat",
+            singleton: true,
+          }, 
+          "preact-router": {
+            import: "preact-router",
+            singleton: true,
+          },
+          "slpjs": {
+            import: "slpjs",
+            singleton: true
+          },
         }
     })
   ]
 }, { 
-  port: 5051, 
+  port: 5052, 
   static: path.join(__dirname, "./public") 
 })

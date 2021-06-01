@@ -38,10 +38,6 @@ export const ZOMBIE_NFT_IMAGE_SERVER =
 export const ZOMBIE_GROUP_ID =
   "de6339df4ea6ff1b999c3c16b16764f3f749817d8a160a1cac29a1171f7ad639";
 
-export const SIGNUP_LAST_USED_IPFS_PATH = "SIGNUP_LAST_USED_IPFS_PATH";
-export const SIGNUP_LATEST_AVAILABLE_IPFS_PATH = "SIGNUP_LATEST_AVAILABLE_IPFS_PATH";
-export const SIGNUP_USED_IPFS_PATHS = "SIGNUP_USED_IPFS_PATHS"
-
 export const electrumCashClusters = BITCOIN_NETWORK === "mainnet" ? [
   {
     host: "electroncash.de",

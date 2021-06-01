@@ -11,12 +11,12 @@ import {
 } from "../../signer";
 import { makeAccessToken, makeSessionId } from "../../utils/permission";
 import { getWalletAddr, getWalletCashAccount } from "../../utils/wallet";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import Checkbox from "../common/Checkbox";
-import Loading from "../common/Loading";
-import Article from "../common/Article";
+import Heading from "signup-app/Heading";
+import Input from "signup-app/Input";
+import Button from "signup-app/Button";
+import Checkbox from "signup-app/Checkbox";
+import Loading from "signup-app/Loading";
+import Article from "signup-app/Article";
 import { UtxosContext } from "../WithUtxos";
 import { genesisSlp, feesFor } from "../../utils/transactions";
 import slpLogo from "../../assets/slp-logo-2.png";

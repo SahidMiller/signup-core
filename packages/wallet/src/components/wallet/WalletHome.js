@@ -11,12 +11,12 @@ import RequestSlpSend from "./RequestSLPSend";
 import RequestSLPGenesis from "./RequestSLPGenesis";
 import RequestNFTGenesisChild from "./RequestNFTGenesisChild";
 import RequestSendContribution from "./RequestSendContribution";
-import Logo from "../common/Logo";
-import Article from "../common/Article";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import Checkbox from "../common/Checkbox";
+import Logo from "signup-app/Logo";
+import Article from "signup-app/Article";
+import Heading from "signup-app/Heading";
+import Input from "signup-app/Input";
+import Button from "signup-app/Button";
+import Checkbox from "signup-app/Checkbox";
 
 import { UtxosContext } from "../WithUtxos";
 

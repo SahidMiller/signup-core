@@ -13,11 +13,11 @@ import {
   getWalletCashAccount,
   getWalletSLPAddr,
 } from "../../utils/wallet";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import Checkbox from "../common/Checkbox";
-import Article from "../common/Article";
+import Heading from "signup-app/Heading";
+import Input from "signup-app/Input";
+import Button from "signup-app/Button";
+import Checkbox from "signup-app/Checkbox";
+import Article from "signup-app/Article";
 import { UtxosContext } from "../WithUtxos";
 
 const permissionCss = css`

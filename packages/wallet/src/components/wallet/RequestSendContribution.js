@@ -5,9 +5,9 @@ import { handleMessageBackToClient } from "../../signer";
 import { satsToBch, bchToFiat, sats } from "../../utils/unitUtils";
 import { sendCommitmentTx, sendBchTx, feesFor } from "../../utils/transactions"
 
-import Heading from "../common/Heading";
-import Button from "../common/Button";
-import Article from "../common/Article";
+import Heading from "signup-app/Heading";
+import Button from "signup-app/Button";
+import Article from "signup-app/Article";
 import { UtxosContext } from "../WithUtxos";
 
 import moment from 'moment'

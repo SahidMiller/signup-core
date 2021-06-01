@@ -25,16 +25,16 @@ import {
   SLP_EXPLORER,
   BITCOIN_COM_EXPLORER,
 } from "../../config";
-import Article from "../common/Article";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import Box from "../common/Box";
-import Checkbox from "../common/Checkbox";
+import Article from "signup-app/Article";
+import Heading from "signup-app/Heading";
+import Input from "signup-app/Input";
+import Button from "signup-app/Button";
+import Box from "signup-app/Box";
+import Checkbox from "signup-app/Checkbox";
 import * as wallet from "../../utils/wallet";
 import useWallet from "../../hooks/useWallet";
 import { getSlpByTokenId, getSlpBalances } from "../../utils/slp";
-import Loading from "../common/Loading";
+import Loading from "signup-app/Loading";
 import NFTImage from "./NFTImage";
 import { sendSlpTx } from "../../utils/transactions";
 import { countDecimals, formatDocumentUri } from "../../utils/helpers";
