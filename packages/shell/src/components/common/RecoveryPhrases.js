@@ -1,6 +1,5 @@
 import { h, Fragment } from "preact";
 import { css } from "emotion";
-import Heading from "../common/Heading";
 
 const divStyle = css`
   display: block;

@@ -1,29 +1,22 @@
 import { h, Fragment } from "preact";
 import { useState, useEffect, useContext } from "preact/hooks";
 import { Link, route } from "preact-router";
-import { Mnemonic } from "bitbox-sdk";
-import { css } from "emotion";
+
 import * as Sentry from "@sentry/browser";
 import { toast } from "react-toastify";
-import Logo from "../common/Logo";
-import Article from "../common/Article";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import * as wallet from "../../utils/wallet";
-import { UtxosContext } from "../WithUtxos";
 
-export default function () {
+import Article from "../../common/Article";
+import Heading from "../../common/Heading";
+import Input from "../../common/Input";
+import Button from "../../common/Button";
+
+import { WalletContext } from "../../WithWallet";
+
+export default function ({ encryptionKey }) {
+  const { walletExist, setSignupAccount, refetchWallet, isPendingIpfs } = useContext(WalletContext)
   const [walletMnemonic, setWalletMnemonic] = useState();
-  const [walletExist, setWalletExist] = useState(false);
 
-  const { refetchUtxos } = useContext(UtxosContext);
-
-  useEffect(() => {
-    (async () => {
-      setWalletExist(await wallet.doesWalletExist());
-    })();
-  }, []);
+  refetchWallet()
 
   function handleMnemonicInput(e) {
     setWalletMnemonic(e.target.value.trim());
@@ -32,30 +25,16 @@ export default function () {
   function handleImport(e) {
     e.preventDefault();
 
-    if (!walletMnemonic || !wallet.isRecoveryKeyValid(walletMnemonic)) {
-      toast.error(
-        "Your recovery phrases are not valid. Send us an email to hello@signup.cash for assistant if you need."
-      );
-      return;
-    }
-
     (async () => {
-      // second check to make sure really no wallet exist here!
-      const walletExist = await wallet.doesWalletExist();
-      if (walletExist) {
-        toast.error("A wallet already exist! You need to logout first.");
-        return;
-      }
 
       try {
-        await wallet.storeWallet(walletMnemonic);
-        await wallet.storeWalletIsVerified();
-
-        refetchUtxos();
+        
+        await setSignupAccount(encryptionKey, walletMnemonic)
 
         setTimeout(() => {
           route("/", true);
         }, 1000);
+
       } catch (e) {
         console.log(e);
         toast.error("There is an error while importing your wallet!");
@@ -73,6 +52,7 @@ export default function () {
         <form onSubmit={handleImport}>
           <Article ariaLabel="Import Your Wallet">
             <Heading number={2}>Import Your Wallet</Heading>
+            {isPendingIpfs && <Loading text="Fetching latest wallet code ... 🔒" />}
             {walletExist ? (
               <p>
                 You already have an active wallet. If you want to import a new

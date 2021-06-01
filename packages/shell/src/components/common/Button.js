@@ -3,6 +3,7 @@ import { Link } from "preact-router";
 import { css, cx } from "emotion";
 
 export default function ({
+  id,
   type,
   primary,
   secondary,
@@ -40,7 +41,7 @@ export default function ({
       return "#7c3aed";
     }
 
-    return "lightgray";
+    return "#949494";
   }
 
   function getHoverBgColor() {
@@ -65,12 +66,12 @@ export default function ({
       return "#815de3";
     }
 
-    return "gray";
+    return "#a09f9f";
   }
 
   const buttonStyle = css`
     background: ${getBgColor()};
-    color: ${isPrimary || disabled ? "white" : "black"};
+    color: white;
     user-select: none;
     width: 100%;
     font-family: Poppins, sans-serif;
@@ -81,7 +82,7 @@ export default function ({
     box-sizing: border-box;
     text-align: center;
     display: ${inline ? "inline-block" : "block"};
-    border: 0.1rem solid;
+    border: 0;
     font-size: 16px;
     font-weight: 400;
     cursor: ${disabled ? "default" : "pointer"};
@@ -113,6 +114,7 @@ export default function ({
 
       {!linkTo && (
         <button
+          id={id}
           disabled={disabled}
           type={type || "button"}
           onClick={disabled ? () => null : onClick}

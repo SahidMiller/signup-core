@@ -1997,6 +1997,13 @@
     readdirp "^2.2.1"
     upath "^1.1.1"
 
+"@nimiq/identicons@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/identicons/-/identicons-1.6.0.tgz#34f68a017ef55d4f004958bf06c03bc526ffeb70"
+  integrity sha512-TLVkH/nxDMIAlmAgwjjNFcNr6wwrHCarRulO0e78B2yghM+zCW0RBCjipyPVCMyPTQM0V9dyzCX3an7xQykkdQ==
+  dependencies:
+    dom-parser "^0.1.5"
+
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.4.tgz"
@@ -2264,16 +2271,56 @@
   uid ""
 
 "@signupcash/shell@link:packages/shell":
-  version "0.0.0"
-  uid ""
+  version "0.0.1"
+  dependencies:
+    "@nimiq/identicons" "^1.6.0"
+    axios "^0.19.2"
+    babel-plugin-transform-inline-environment-variables "^0.4.3"
+    browser-passworder "^2.0.3"
+    delay "^4.4.0"
+    idb-keyval "^5.0.5"
+    p-race "^3.0.0"
+    p-retry "^4.2.0"
+    regenerator-runtime "^0.13.7"
 
 "@signupcash/utils@link:packages/utils":
   version "0.0.0"
   uid ""
 
 "@signupcash/wallet@link:packages/wallet":
-  version "0.0.0"
-  uid ""
+  version "1.2.1"
+  dependencies:
+    "@babel/plugin-transform-react-jsx" "^7.10.4"
+    "@bitauth/libauth" "^1.18.0"
+    "@sentry/browser" "^5.27.1"
+    "@sentry/tracing" "^5.27.1"
+    axios "^0.19.2"
+    babel-plugin-transform-inline-environment-variables "^0.4.3"
+    base58check "^2.0.0"
+    bignumber.js "^9.0.1"
+    bitbox-sdk "^8.11.2"
+    bitcore-lib-cash "^8.24.2"
+    core-js "^3.6.5"
+    delay "^4.4.0"
+    electrum-cash "^2.0.6"
+    emotion "^10.0.27"
+    hash.js "^1.1.7"
+    idb-keyval "^5.0.5"
+    jsonwebtoken "^8.5.1"
+    localforage "^1.9.0"
+    moment "^2.29.1"
+    p-retry "^4.2.0"
+    preact "^10.5.3"
+    preact-compat "^3.19.0"
+    preact-router "^3.2.1"
+    qrcode.react "^1.0.0"
+    react-burger-menu "^2.8.0"
+    react-image-fallback "^8.0.0"
+    react-toastify "^6.0.8"
+    regenerator-runtime "^0.13.7"
+    slp-mdm "0.0.7"
+    slpjs "^0.27.11"
+    uuid "^8.3.1"
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
@@ -3801,6 +3848,13 @@ brorand@^1.0.1, brorand@^1.1.0:
   resolved "https://registry.npmjs.org/brorand/-/brorand-1.1.0.tgz"
   integrity sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=
 
+browser-passworder@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/browser-passworder/-/browser-passworder-2.0.3.tgz#6fdd2082e516a176edbcb3dcee0b7f9fce4f7917"
+  integrity sha1-b90gguUWoXbtvLPc7gt/n85PeRc=
+  dependencies:
+    browserify-unibabel "^3.0.0"
+
 browser-process-hrtime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz"
@@ -3875,6 +3929,11 @@ browserify-sign@^4.0.0:
     parse-asn1 "^5.1.5"
     readable-stream "^3.6.0"
     safe-buffer "^5.2.0"
+
+browserify-unibabel@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/browserify-unibabel/-/browserify-unibabel-3.0.0.tgz#5a6b8f0f704ce388d3927df47337e25830f71dda"
+  integrity sha1-WmuPD3BM44jTkn30czfiWDD3Hdo=
 
 browserify-zlib@^0.2.0:
   version "0.2.0"
@@ -5377,6 +5436,11 @@ dom-helpers@^5.0.1:
   dependencies:
     "@babel/runtime" "^7.8.7"
     csstype "^3.0.2"
+
+dom-parser@^0.1.5:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/dom-parser/-/dom-parser-0.1.6.tgz#696c633b535ab3291424eb5bf58ee426f64632ca"
+  integrity sha512-3nVRKbLEwmGfghLoeT1dxlK/0votalnOfasP+8VCHYDfDuCETY4LeMblfOeqww6XZk2ymZ1Uewy/hVad6Dy3yw==
 
 dom-serializer@0:
   version "0.2.2"
@@ -7758,6 +7822,11 @@ is-electron@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/is-electron/-/is-electron-2.2.0.tgz"
   integrity sha512-SpMppC2XR3YdxSzczXReBjqs2zGscWQpBIKqwXYBFic0ERaxNVgwLCHwOLZeESfdJQjX0RDvrJ1lBXX2ij+G1Q==
+
+is-empty-iterable@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-empty-iterable/-/is-empty-iterable-3.0.0.tgz#647e56cbe5a205296d5ef6d036bfa4f699646bcf"
+  integrity sha512-ZXVNGZrRvda9spnGVME3nTYTyDNjCTrmRy3DfDjBaMQ7aftcPsy/vkJoLL47IwcAbgioIfGvjQJWdit8GiggPg==
 
 is-extendable@^0.1.0, is-extendable@^0.1.1:
   version "0.1.1"
@@ -10431,6 +10500,13 @@ p-queue@^6.0.0:
   dependencies:
     eventemitter3 "^4.0.4"
     p-timeout "^3.2.0"
+
+p-race@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/p-race/-/p-race-3.0.0.tgz#d7eacd6164fcbd0fa901627609dbc81d4b9a5919"
+  integrity sha512-rHQzkwCXYBCgi1mFiTtO8eYtzzGUu8TdsqBIdZfnh+0HtXtd4WgV2XaprSkUjXa3svI2D3Lto9MifEx7WG/HRw==
+  dependencies:
+    is-empty-iterable "^3.0.0"
 
 p-reduce@^1.0.0:
   version "1.0.0"

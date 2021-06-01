@@ -2,44 +2,33 @@ import { h, Fragment } from "preact";
 import { useState, useEffect, useContext } from "preact/hooks";
 import { route } from "preact-router";
 import { css } from "emotion";
-import Logo from "../common/Logo";
-import Article from "../common/Article";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import Checkbox from "../common/Checkbox";
+
+import Article from "./Article";
+import Heading from "./Heading";
+import Button from "./Button";
 import RecoveryPhrases from "./RecoveryPhrases";
-import * as wallet from "../../utils/wallet";
-import { UtxosContext } from "../WithUtxos";
+import { createRecoveryPhrase } from "../../utils/wallet";
 
-const labelStyle = css`
-  align-self: start;
-  margin-bottom: -14px;
-  margin-left: 8px;
-`;
-const Label = ({ children }) => <label class={labelStyle}>{children}</label>;
-
-export default function ({ email, optinForEmails, isAnonymous }) {
-  const { refetchUtxos } = useContext(UtxosContext);
-
-  async function handleStoreWallet(e) {
-    e.preventDefault();
-    await wallet.storeWalletIsVerified();
-    refetchUtxos();
-    setTimeout(() => {
-      route("/", true);
-    }, 1000);
-  }
-
+export default function ({ onConfirm }) {
+  
   const [recoveryPhrases, setRecoveryPhrases] = useState([]);
-
+  
   useEffect(() => {
     // generate the wallet here
     (async () => {
-      const { mnemonic } = wallet.createRecoveryPhrase();
+      const { mnemonic } = createRecoveryPhrase();
       setRecoveryPhrases(mnemonic.split(" "));
     })();
+
+    (async () => {
+      
+    })
   }, []);
+
+  async function handleStoreWallet(e) {
+    e.preventDefault();
+    onConfirm(recoveryPhrases.join(" "))
+  }
 
   return (
     <form onSubmit={handleStoreWallet}>

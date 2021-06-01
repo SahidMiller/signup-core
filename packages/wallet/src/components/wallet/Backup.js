@@ -6,15 +6,15 @@ import QRCode from "qrcode.react";
 import slpLogo from "../../assets/slp-logo-2.png";
 import bchLogo from "../../assets/bch-icon-qrcode.png";
 import { css } from "emotion";
-import Logo from "../common/Logo";
-import Article from "../common/Article";
-import Heading from "../common/Heading";
-import Input from "../common/Input";
-import Button from "../common/Button";
-import Checkbox from "../common/Checkbox";
+import Logo from "signup-app/Logo";
+import Article from "signup-app/Article";
+import Heading from "signup-app/Heading";
+import Input from "signup-app/Input";
+import Button from "signup-app/Button";
+import Checkbox from "signup-app/Checkbox";
 import * as wallet from "../../utils/wallet";
 import useWallet from "../../hooks/useWallet";
-import RecoveryPhrases from "../new-wallet/RecoveryPhrases";
+import RecoveryPhrases from "signup-app/RecoveryPhrases";
 
 export default function () {
   const [status, setStatus] = useState("QR_SCAN");
