@@ -2,21 +2,24 @@ import { h, Fragment } from "preact";
 import { useState, useEffect, useContext } from "preact/hooks";
 import { Link, route } from "preact-router";
 
-import * as Sentry from "@sentry/browser";
-import { toast } from "react-toastify";
+import useCreateSignupAccount from "../../../hooks/useCreateSignupAccount";
+import useWallet from "../../../hooks/useWallet";
 
 import Article from "../../common/Article";
 import Heading from "../../common/Heading";
 import Input from "../../common/Input";
 import Button from "../../common/Button";
+import Loading from "../../common/Loading";
 
-import { WalletContext } from "../../WithWallet";
+import * as Sentry from "@sentry/browser";
+import { toast } from "react-toastify";
 
 export default function ({ encryptionKey }) {
-  const { walletExist, setSignupAccount, refetchWallet, isPendingIpfs } = useContext(WalletContext)
+  const { walletExist, refetchWallet } = useWallet();
+  const [createAccount, isPendingIpfs] = useCreateSignupAccount();
   const [walletMnemonic, setWalletMnemonic] = useState();
 
-  refetchWallet()
+  refetchWallet();
 
   function handleMnemonicInput(e) {
     setWalletMnemonic(e.target.value.trim());
@@ -26,15 +29,8 @@ export default function ({ encryptionKey }) {
     e.preventDefault();
 
     (async () => {
-
       try {
-        
-        await setSignupAccount(encryptionKey, walletMnemonic)
-
-        setTimeout(() => {
-          route("/", true);
-        }, 1000);
-
+        await createAccount(encryptionKey, walletMnemonic);
       } catch (e) {
         console.log(e);
         toast.error("There is an error while importing your wallet!");
@@ -52,7 +48,9 @@ export default function ({ encryptionKey }) {
         <form onSubmit={handleImport}>
           <Article ariaLabel="Import Your Wallet">
             <Heading number={2}>Import Your Wallet</Heading>
-            {isPendingIpfs && <Loading text="Fetching latest wallet code ... 🔒" />}
+            {isPendingIpfs && (
+              <Loading text="Fetching latest wallet code ... 🔒" />
+            )}
             {walletExist ? (
               <p>
                 You already have an active wallet. If you want to import a new

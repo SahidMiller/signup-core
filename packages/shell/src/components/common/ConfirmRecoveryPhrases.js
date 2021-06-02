@@ -1,5 +1,5 @@
 import { h, Fragment } from "preact";
-import { useState, useEffect, useContext } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { route } from "preact-router";
 import { css } from "emotion";
 
@@ -10,9 +10,8 @@ import RecoveryPhrases from "./RecoveryPhrases";
 import { createRecoveryPhrase } from "../../utils/wallet";
 
 export default function ({ onConfirm }) {
-  
   const [recoveryPhrases, setRecoveryPhrases] = useState([]);
-  
+
   useEffect(() => {
     // generate the wallet here
     (async () => {
@@ -20,14 +19,12 @@ export default function ({ onConfirm }) {
       setRecoveryPhrases(mnemonic.split(" "));
     })();
 
-    (async () => {
-      
-    })
+    async () => {};
   }, []);
 
   async function handleStoreWallet(e) {
     e.preventDefault();
-    onConfirm(recoveryPhrases.join(" "))
+    onConfirm(recoveryPhrases.join(" "));
   }
 
   return (

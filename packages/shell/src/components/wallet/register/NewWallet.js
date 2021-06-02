@@ -1,27 +1,24 @@
 import { h, Fragment } from "preact";
-import { useContext } from "preact/hooks"
 
-import { toast } from "react-toastify";
-import { route } from "preact-router";
-import * as Sentry from "@sentry/browser";
+import useCreateSignupAccount from "../../../hooks/useCreateSignupAccount";
 
 import ConfirmRecoveryPhrases from "../../common/ConfirmRecoveryPhrases";
-import { WalletContext } from "../../WithWallet";
+import Loading from "../../common/Loading";
+
+import { toast } from "react-toastify";
+import * as Sentry from "@sentry/browser";
 
 export default function ({ encryptionKey }) {
-  const { setSignupAccount, isPendingIpfs } = useContext(WalletContext)
+  const [createAccount, isPendingIpfs] = useCreateSignupAccount();
 
   async function onConfirmRecoveryPhrase(mnemonic) {
-    setSignupAccount(encryptionKey, mnemonic).then(() => {
-
-      setTimeout(() => {
-        route("/", true);
-      }, 1000);
-    }).catch((e) => {
+    try {
+      await createAccount(encryptionKey, mnemonic);
+    } catch (e) {
       console.log(e);
-      toast.error("There is an error while creating your wallet!");
+      toast.error("There is an error while importing your wallet!");
       Sentry.captureException(e);
-    });
+    }
   }
 
   return (

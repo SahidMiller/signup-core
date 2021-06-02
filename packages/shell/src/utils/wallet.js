@@ -1,18 +1,9 @@
-const slpjs = require("slpjs");
 const BITBOX = require("bitbox-sdk").BITBOX;
 const bitbox = new BITBOX();
 
-import * as Sentry from "@sentry/browser";
 import localforage from "localforage";
-import passworder from "browser-passworder"
-import { SIGNUP_USED_IPFS_PATHS, SIGNUP_LAST_USED_IPFS_PATH, SIGNUP_REQUESTED_IPFS_PATH } from "../config"
-
-function q(selector, el) {
-  if (!el) {
-    el = document;
-  }
-  return el.querySelector(selector);
-}
+import passworder from "browser-passworder";
+import { WALLET_HD_PATH } from "../config";
 
 export function createRecoveryPhrase() {
   const mnemonic = bitbox.Mnemonic.generate(128);
@@ -26,29 +17,32 @@ export function isRecoveryKeyValid(mnemonic) {
   );
 }
 
-/**
- * 
- * @param {string} email email used as salt for pbkdf2 -> aes encryption
- * @param {string} password password for pbkdf2 -> aes encryption
- * @returns {Promise<boolean>} unencrypted xpriv, most likely master used to derive recieve key
- */
 export async function findWallet(email, password) {
-
-  const key = await passworder.keyFromPassword(password, btoa(email))
-  const encryptedWifs = await localforage.getItem("SIGNUP_ACCOUNTS") || []
-  return await Promise.any(encryptedWifs.map((encryptedWif) => passworder.decryptWithKey(key, encryptedWif))) 
+  const key = await passworder.keyFromPassword(password, btoa(email));
+  const encryptedWifs = (await localforage.getItem("SIGNUP_ACCOUNTS")) || [];
+  return await Promise.any(
+    encryptedWifs.map((encryptedWif) =>
+      passworder.decryptWithKey(key, encryptedWif)
+    )
+  );
 }
 
 export async function storeEncryptedWif(encryptionKey, verficationKey, wif) {
-  const encryptedWif = await passworder.encryptWithKey(encryptionKey, wif)
-  const encryptedWifs = await localforage.getItem("SIGNUP_ACCOUNTS") || []
+  const encryptedWif = await passworder.encryptWithKey(encryptionKey, wif);
+  const encryptedWifs = (await localforage.getItem("SIGNUP_ACCOUNTS")) || [];
 
-  await localforage.setItem("SIGNUP_ACCOUNT_ADDRESS", verficationKey)
-  await localforage.setItem("SIGNUP_ACCOUNTS", [...encryptedWifs, encryptedWif]);
+  await localforage.setItem("SIGNUP_ACCOUNT_ADDRESS", verficationKey);
+  await localforage.setItem("SIGNUP_ACCOUNTS", [
+    ...encryptedWifs,
+    encryptedWif,
+  ]);
 }
 
 export async function storeWallet(accountRecieveKey) {
-  await localforage.setItem("SIGNUP_ACCOUNT", accountRecieveKey.keyPair.toWIF());
+  await localforage.setItem(
+    "SIGNUP_ACCOUNT",
+    accountRecieveKey.keyPair.toWIF()
+  );
 }
 
 export async function storeWalletIsVerified() {
@@ -64,11 +58,11 @@ export async function getWalletKeypair() {
 
   const userWallet = await localforage.getItem("SIGNUP_ACCOUNT");
   if (userWallet) {
-    userRecieveAccount = bitbox.ECPair.fromWIF(userWallet)
+    userRecieveAccount = bitbox.ECPair.fromWIF(userWallet);
   }
 
   const walletStatus = await localforage.getItem("SIGNUP_ACCOUNT_STATUS");
-  return walletStatus && userRecieveAccount
+  return walletStatus && userRecieveAccount;
 }
 
 export async function doesWalletExist() {
@@ -76,11 +70,11 @@ export async function doesWalletExist() {
 }
 
 export async function checkHasWallets() {
-  return !!(await localforage.getItem("SIGNUP_ACCOUNTS") || []).length
+  return !!((await localforage.getItem("SIGNUP_ACCOUNTS")) || []).length;
 }
 
 export async function getWalletAddr() {
-  const keypair = await getWalletKeypair()
+  const keypair = await getWalletKeypair();
 
   if (keypair) {
     const legacyAddr = keypair.getAddress();
@@ -116,7 +110,6 @@ export async function signPayload(data, requestedBy) {
   const keypair = await getWalletKeypair();
 
   if (keypair) {
-    
     const wif = keypair.toWIF();
     const signature = bitbox.BitcoinCash.signMessageWithPrivKey(
       wif,
@@ -134,47 +127,10 @@ export async function signPayload(data, requestedBy) {
   }
 }
 
-export async function getLastUsedWalletIpfsPath(verificationAddress) {
-  
-  try {
-    //TODO God willing: store version so we can decode properly on upgrade, God willing.
-    const { path, sig, index } = await localforage.getItem(SIGNUP_LAST_USED_IPFS_PATH)
-    const messageToSign = JSON.stringify({ path, index })
-    
-    if (bitbox.BitcoinCash.verifyMessage(verificationAddress, sig, messageToSign)) {
-      return { path, index }
-    }
-
-  } catch(e) {
-    
-    return
-  }
-}
-
-export async function getAllUsedWalletIpfsPaths() {
-  return await localforage.getItem(SIGNUP_USED_IPFS_PATHS) || []
-}
-
-export async function storeWalletIpfsPath(signingKey, path, index) {
-  const history = await getAllUsedWalletIpfsPaths()
-  const updatedHistory = [...history, path]
-  
-  //TODO God willing: might need to hash this as well so no using an old index, God willing.
-  const walletHashHistory = Array.from(new Set(updatedHistory))
-  
-  //TODO God willing: add version to message so it can be decoded in future, God willing.
-  const messageToSign = JSON.stringify({ path, index })
-  const signature  = bitbox.BitcoinCash.signMessageWithPrivKey(signingKey, messageToSign);
-
-  //TODO God willing: app shell will only open if signed
-  await localforage.setItem(SIGNUP_LAST_USED_IPFS_PATH, { path, index, sig: signature })
-  await localforage.setItem(SIGNUP_USED_IPFS_PATHS, walletHashHistory)
-}
-
-export async function getRequestedWalletIpfsPath() {
-  return await localforage.getItem(SIGNUP_REQUESTED_IPFS_PATH)
-}
-
-export async function storeRequestedWalletIpfsPath(path) {
-  await localforage.setItem(SIGNUP_REQUESTED_IPFS_PATH, path)
+export async function storeWalletInfo(hdNode, wif, encryptionKey) {
+  const verificationAddress = bitbox.HDNode.toCashAddress(hdNode);
+  const accountRecieveKey = bitbox.HDNode.derivePath(hdNode, WALLET_HD_PATH);
+  await storeEncryptedWif(encryptionKey, verificationAddress, wif);
+  await storeWallet(accountRecieveKey);
+  await storeWalletIsVerified();
 }
