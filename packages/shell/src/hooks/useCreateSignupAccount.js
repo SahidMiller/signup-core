@@ -3,13 +3,14 @@ import useIpfsAppLoader from "./useIpfsAppLoader";
 import {
   deleteWallet,
   doesWalletExist,
-  isRecoveryKeyValid,
   storeWalletInfo,
 } from "../utils/wallet";
 import { deleteIpfsPaths, storeIpfsPath } from "../utils/ipfs";
 import { BITCOIN_NETWORK } from "../config";
 
 import { BITBOX } from "bitbox-sdk";
+import { storeEncryptedWif } from "../utils/wallets";
+import { isRecoveryKeyValid } from "../utils/mnemonics";
 
 const bitbox = new BITBOX({});
 
@@ -44,8 +45,9 @@ export default function useCreateSignupAccount() {
     const wif = hdNode.keyPair.toWIF();
 
     try {
-      await storeWalletInfo(hdNode, wif, encryptionKey);
+      await storeWalletInfo(hdNode);
       await storeIpfsPath(wif, latestIpfsPath, 1);
+      await storeEncryptedWif(encryptionKey, wif);
 
       //TODO God willing: Better transition?
       if (window) window.location.href = "/";

@@ -1,5 +1,6 @@
 import { useContext, useState } from "preact/hooks";
 import { storeRequestedIpfsPath, updateIpfsPath } from "../utils/ipfs";
+import { findWallet } from "../utils/wallets";
 
 export default function useUpgradeIpfsPath() {
   const { currentIpfsIndex, currentRequestedIpfsPath } =
@@ -11,9 +12,9 @@ export default function useUpgradeIpfsPath() {
       await storeRequestedIpfsPath(null);
       window.location.reload();
     } else {
+      const wif = await findWallet(email, password);
       const succeeded = await updateIpfsPath(
-        email,
-        password,
+        wif,
         currentRequestedIpfsPath,
         currentIpfsIndex
       );

@@ -1,7 +1,8 @@
 import { h, createContext } from "preact";
 import { useEffect, useState, useContext } from "preact/hooks";
 
-import { checkHasWallets, getWalletVerificationAddress } from "../utils/wallet";
+import { checkHasWallets } from "../utils/wallets";
+import { getWalletVerificationAddress } from "../utils/wallet";
 import { getLastUsedIpfsPath, getRequestedIpfsPath } from "../utils/ipfs";
 
 import useIpfsUpdateToaster from "../hooks/useIpfsUpdateToaster";

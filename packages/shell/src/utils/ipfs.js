@@ -7,7 +7,6 @@ import {
   SIGNUP_LAST_USED_IPFS_PATH,
   SIGNUP_REQUESTED_IPFS_PATH,
 } from "../config";
-import { findWallet } from "./wallet";
 
 export async function getLastUsedIpfsPath(verificationAddress) {
   try {
@@ -62,9 +61,7 @@ export async function storeRequestedIpfsPath(path) {
   await localforage.setItem(SIGNUP_REQUESTED_IPFS_PATH, path);
 }
 
-export async function updateIpfsPath(email, password, requestedPath, index) {
-  const wif = await findWallet(email, password);
-
+export async function updateIpfsPath(wif, requestedPath, index) {
   if (!wif) return false;
 
   try {

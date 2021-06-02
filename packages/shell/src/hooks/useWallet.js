@@ -3,7 +3,8 @@ import { useEffect, useState, useContext } from "preact/hooks";
 
 import useIpfsAppLoader, { WithIpfsAppLoader } from "../hooks/useIpfsAppLoader";
 
-import { getWalletAddr, checkHasWallets } from "../utils/wallet";
+import { getWalletAddr } from "../utils/wallet";
+import { checkHasWallets } from "../utils/wallets";
 
 const WalletContext = createContext({});
 

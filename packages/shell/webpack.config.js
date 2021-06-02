@@ -41,6 +41,8 @@ module.exports = merge(
                       "SIGNUP_WALLET_ENTRY_HOST",
                       "SIGNUP_WALLET_ENTRY_PATH",
                       "SIGNUP_WALLET_IPNS",
+                      "WALLET_HD_PATH",
+                      "BITCOIN_NETWORK",
                       "FORCE_IPFS",
                     ],
                   },

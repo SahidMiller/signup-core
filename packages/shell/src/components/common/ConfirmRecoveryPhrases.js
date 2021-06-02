@@ -7,7 +7,7 @@ import Article from "./Article";
 import Heading from "./Heading";
 import Button from "./Button";
 import RecoveryPhrases from "./RecoveryPhrases";
-import { createRecoveryPhrase } from "../../utils/wallet";
+import { createRecoveryPhrase } from "../../utils/mnemonics";
 
 export default function ({ onConfirm }) {
   const [recoveryPhrases, setRecoveryPhrases] = useState([]);
