@@ -1,13 +1,11 @@
 import { h, Fragment } from "preact";
 
 import useIpfsAppLoader from "../../hooks/useIpfsAppLoader";
-import useWallet from "../../hooks/useWallet";
 
 import Avatar from "../common/Avatar";
 
 export default function () {
-  const { bchAddr } = useWallet();
-  const { currentIpfsIndex } = useIpfsAppLoader();
+  const { currentIpfsIndex, verificationAddress } = useIpfsAppLoader();
 
-  return <Avatar uniqueId={bchAddr} index={currentIpfsIndex} />;
+  return <Avatar uniqueId={verificationAddress} index={currentIpfsIndex} />;
 }

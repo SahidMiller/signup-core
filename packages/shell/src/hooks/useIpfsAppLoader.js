@@ -17,6 +17,7 @@ function useIpfsAppLoader() {
   const [currentIpfsPath, setCurrentIpfsPath] = useState(null);
   const [currentIpfsIndex, setCurrentIpfsIndex] = useState(null);
   const [requestedIpfsPath, setRequestedIpfsPath] = useState(null);
+  const [verificationAddress, setVerificationAddress] = useState(null);
   const [isIpfsPathLoaded, hasIpfsPathFailedLoad, walletComponents] =
     useIpfsLoader(isReady, currentIpfsPath, requestedIpfsPath);
   const [latestIpfsPath, checkForIpfsUpdates] =
@@ -44,6 +45,7 @@ function useIpfsAppLoader() {
       const requestedPath = await getRequestedIpfsPath();
 
       //Does not fetch ipfs path/plugins until user approves if it's there, God willing
+      setVerificationAddress(verificationAddress);
       setCurrentIpfsPath(path);
       setCurrentIpfsIndex(index);
       setRequestedIpfsPath(requestedPath);
@@ -62,6 +64,7 @@ function useIpfsAppLoader() {
 
   return [
     isReady,
+    verificationAddress,
     currentIpfsPath,
     currentIpfsIndex,
     requestedIpfsPath,
@@ -79,6 +82,7 @@ export default function () {
 export const WithIpfsAppLoader = (Component) => (props) => {
   const [
     isIpfsReady,
+    verificationAddress,
     currentIpfsPath,
     currentIpfsIndex,
     requestedIpfsPath,
@@ -92,6 +96,7 @@ export const WithIpfsAppLoader = (Component) => (props) => {
     <IpfsAppContext.Provider
       value={{
         isIpfsReady,
+        verificationAddress,
         currentIpfsPath,
         currentIpfsIndex,
         requestedIpfsPath,
