@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import * as Sentry from "@sentry/browser";
-import { getWalletEntropy } from "./wallet";
 
 export async function makeSpendToken(budget, deadline) {
   // generate sepnd token and send it to the dapp and tx bridge

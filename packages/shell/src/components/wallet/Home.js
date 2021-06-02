@@ -15,10 +15,7 @@ export default function ({ clientPayload }) {
   const { isIpfsPathLoaded, walletComponents, currentRequestedIpfsPath } =
     useIpfsAppLoader();
 
-  function loadWalletHome() {
-    const { WalletHome } = walletComponents;
-    return <WalletHome clientPayload={clientPayload} />;
-  }
+  const isWalletReady = isReady && walletExist && isIpfsPathLoaded;
 
   return (
     <>
@@ -28,34 +25,39 @@ export default function ({ clientPayload }) {
           <Menu />
         </header>
       )}
-      <main>
-        {!isReady && (
-          <div
-            class={css`
-              text-align: center;
-              color: #7c3aed;
-            `}
-          >
-            Opening your wallet ... 🔒
-            <p
+
+      {!isWalletReady && (
+        <main>
+          {!isReady && (
+            <div
               class={css`
-                font-size: 12px;
-                margin: 20px;
-                font-weight: 300;
-                color: black;
+                text-align: center;
+                color: #7c3aed;
               `}
             >
-              This might take a few seconds...
-            </p>
-          </div>
-        )}
+              Opening your wallet ... 🔒
+              <p
+                class={css`
+                  font-size: 12px;
+                  margin: 20px;
+                  font-weight: 300;
+                  color: black;
+                `}
+              >
+                This might take a few seconds...
+              </p>
+            </div>
+          )}
 
-        {isReady && !walletExist && <Authenticate />}
+          {isReady && !walletExist && <Authenticate />}
 
-        {isReady && !!currentRequestedIpfsPath && <AuthenticateUpgrade />}
+          {isReady && !!currentRequestedIpfsPath && <AuthenticateUpgrade />}
+        </main>
+      )}
 
-        {isReady && walletExist && isIpfsPathLoaded && loadWalletHome()}
-      </main>
+      {isWalletReady && (
+        <walletComponents.AppRouter clientPayload={clientPayload} />
+      )}
     </>
   );
 }

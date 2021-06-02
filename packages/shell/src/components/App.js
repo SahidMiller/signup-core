@@ -1,5 +1,5 @@
 import { h, Fragment } from "preact";
-import Router from "preact-router";
+import Router, { Route } from "preact-router";
 
 import usePostMessage from "../hooks/usePostMessage";
 import useIpfsAppLoader from "../hooks/useIpfsAppLoader";
@@ -27,34 +27,15 @@ Sentry.init({
 });
 
 function App() {
-  const { isIpfsPathLoaded, walletComponents } = useIpfsAppLoader();
   const [clientPayload] = usePostMessage({});
-
-  function loadWalletComponents() {
-    if (!isIpfsPathLoaded) return;
-
-    const { Topup, Send, Backup, SLPTokens, NFTs, TokenPage, Contributions } =
-      walletComponents;
-
-    return [
-      <Topup path="/top-up" clientPayload={clientPayload} />,
-      <Send path="/send" clientPayload={clientPayload} />,
-      <Backup path="/backup" />,
-      <SLPTokens path="/tokens" />,
-      <NFTs path="/NFTs" />,
-      <TokenPage path="/token" />,
-      <Contributions path="/contributions" />,
-    ];
-  }
 
   return (
     <>
       <Router>
-        <Home path="/" clientPayload={clientPayload} />
+        <Home default path="/" clientPayload={clientPayload} />
         <Logout path="/logout" />
         <Register path="/register" />
         <Login path="/login" />
-        {loadWalletComponents()}
       </Router>
 
       <ToastContainer position="bottom-center" draggable />

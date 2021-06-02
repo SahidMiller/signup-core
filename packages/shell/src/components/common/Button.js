@@ -21,9 +21,8 @@ export default function ({
 
   function getBgColor() {
     if (disabled) {
-
       if (isSecondary) {
-        return "#b6b6b6"
+        return "#b6b6b6";
       }
 
       return "#aa91ee";
@@ -46,22 +45,21 @@ export default function ({
 
   function getHoverBgColor() {
     if (disabled) {
-
       if (isSecondary) {
-        return "#b6b6b6"
+        return "#b6b6b6";
       }
-      
+
       return "#aa91ee";
     }
-    
+
     if (alert) {
       return "#c41a4a";
     }
-    
+
     if (green) {
       return "#28d9a7";
     }
-    
+
     if (isPrimary) {
       return "#815de3";
     }
@@ -82,7 +80,7 @@ export default function ({
     box-sizing: border-box;
     text-align: center;
     display: ${inline ? "inline-block" : "block"};
-    border: 0;
+    border: 0.1rem solid;
     font-size: 16px;
     font-weight: 400;
     cursor: ${disabled ? "default" : "pointer"};

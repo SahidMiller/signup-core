@@ -9,7 +9,6 @@ import {
   freezeUtxo,
   unfreezeUtxo,
 } from "../utils/wallet";
-import { workerCourier } from "../signer";
 import { getAllUtxosWithSlpBalances } from "../utils/blockchain";
 import { getSlpUtxos, getSlpBalances, getSlpBatonUtxos } from "../utils/slp";
 
@@ -30,14 +29,13 @@ const WithUtxos = (Component) => {
     const [slpAddr, setSlpAddr] = useState();
     const [walletExist, setWalletExist] = useState();
     const [frozenUtxos, setFrozenUtxos] = useState([]);
-    
+
     useEffect(() => {
       refetchUtxos();
     }, []);
 
     function cleanseCurrentUtxos() {
       setLatestUtxos([]);
-      workerCourier("cleanse_utxos");
     }
 
     async function refetchUtxos() {
@@ -72,14 +70,8 @@ const WithUtxos = (Component) => {
         setSlpBalances(slpBalances);
         setBchAddr(walletAddr);
         setSlpAddr(walletSlpAddr);
-        
+
         setUtxoIsFetching(false);
-        // update data in the web worker
-        workerCourier("update", {
-          latestSatoshisBalance: latestSatoshisBalance,
-          latestUtxos: utxos,
-          slpUtxos: slpUtxos,
-        });
       }
     }
 
@@ -98,14 +90,14 @@ const WithUtxos = (Component) => {
           frozenUtxos,
           freezeUtxo: async (txid, vout, reqType, data) => {
             //TODO God willing: refetch utxos to be sure they exist.
-              // implications may be that can't freeze coins for unbroadcasted tx's
-            const frozenUtxos = await freezeUtxo(txid, vout, reqType, data)
-            setFrozenUtxos([].concat(...Object.values(frozenUtxos)))
+            // implications may be that can't freeze coins for unbroadcasted tx's
+            const frozenUtxos = await freezeUtxo(txid, vout, reqType, data);
+            setFrozenUtxos([].concat(...Object.values(frozenUtxos)));
           },
           unfreezeUtxo: async (txid, vout) => {
-            await unfreezeUtxo(txid, vout)
-            await refetchUtxos()
-          }
+            await unfreezeUtxo(txid, vout);
+            await refetchUtxos();
+          },
         }}
       >
         {<Component {...props} />}

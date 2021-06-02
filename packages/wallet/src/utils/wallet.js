@@ -4,7 +4,7 @@ const bitbox = new BITBOX();
 
 import * as Sentry from "@sentry/browser";
 import localforage from "localforage";
-import { BITCOIN_NETWORK, WALLET_HD_PATH } from '../config'
+
 function q(selector, el) {
   if (!el) {
     el = document;
@@ -12,59 +12,24 @@ function q(selector, el) {
   return el.querySelector(selector);
 }
 
-export async function storeWallet(mnemonic) {
-  await localforage.setItem("SIGNUP_WALLET", btoa(mnemonic));
+export async function getWalletWif() {
+  const userWallet = await localforage.getItem("SIGNUP_ACCOUNT");
+  const walletStatus = await localforage.getItem("SIGNUP_ACCOUNT_STATUS");
+  return walletStatus && userWallet;
 }
 
-export async function storeWalletIsVerified() {
-  await localforage.setItem("SIGNUP_WALLET_STATUS", "VERIFIED");
-}
-
-export function isRecoveryKeyValid(mnemonic) {
-  return (
-    bitbox.Mnemonic.validate(mnemonic, bitbox.Mnemonic.wordLists().english) ===
-    "Valid mnemonic"
-  );
-}
-
-export async function deleteWallet(mnemonic) {
-  await localforage.removeItem("SIGNUP_WALLET");
-  await localforage.removeItem("SIGNUP_WALLET_STATUS");
-  await localforage.removeItem("SIGNUP_PREDICTED_CASH_ACCOUNT");
-}
-
-export async function retrieveWalletCredentials() {
-  let userWallet;
-
-  const userWalletInBase64 = await localforage.getItem("SIGNUP_WALLET");
-  if (userWalletInBase64) {
-    userWallet = atob(userWalletInBase64);
-  }
-
-  const walletStatus = await localforage.getItem("SIGNUP_WALLET_STATUS");
-  const isVerified = walletStatus === "VERIFIED";
-  return { userWallet, isVerified };
+export async function getWalletKeypair() {
+  const wif = await getWalletWif();
+  return wif && bitbox.ECPair.fromWIF(wif);
 }
 
 export async function doesWalletExist() {
-  const { userWallet, isVerified } = await retrieveWalletCredentials();
-  return Boolean(userWallet && isVerified);
+  return Boolean(await getWalletKeypair());
 }
 
 export async function getWalletAddr() {
-  const { userWallet, isVerified } = await retrieveWalletCredentials();
-
-  let bchAddr;
-  if (!userWallet || !isVerified) return;
-
-  const seedBuffer = bitbox.Mnemonic.toSeed(userWallet);
-  const hdNode = bitbox.HDNode.fromSeed(seedBuffer, BITCOIN_NETWORK);
-
-  const path = bitbox.HDNode.derivePath(hdNode, WALLET_HD_PATH);
-  const legacyAddr = path.keyPair.getAddress();
-  bchAddr = bitbox.Address.toCashAddress(legacyAddr);
-
-  return bchAddr;
+  const keypair = await getWalletKeypair();
+  return keypair && bitbox.ECPair.toCashAddress(keypair);
 }
 
 export async function getWalletSLPAddr() {
@@ -73,21 +38,8 @@ export async function getWalletSLPAddr() {
 }
 
 export async function getWalletHdNode() {
-  const { userWallet, isVerified } = await retrieveWalletCredentials();
-  const seedBuffer = bitbox.Mnemonic.toSeed(userWallet);
-  const hdNode = bitbox.HDNode.fromSeed(seedBuffer, BITCOIN_NETWORK);
-  return bitbox.HDNode.derivePath(hdNode, WALLET_HD_PATH);
-}
-
-export async function getWalletEntropy() {
-  const { userWallet } = await retrieveWalletCredentials();
-  return bitbox.Mnemonic.toEntropy(userWallet);
-}
-
-export function createRecoveryPhrase() {
-  const mnemonic = bitbox.Mnemonic.generate(128);
-  storeWallet(mnemonic);
-  return { mnemonic };
+  const wif = await getWalletWif();
+  return wif && bitbox.HDNode.fromWIF(wif);
 }
 
 // Get an object and sign a standard Signup Signature Payload
@@ -107,16 +59,14 @@ export async function signPayload(data, requestedBy) {
     timestamp: Date.now(),
   };
 
-  const walletHdNode = await getWalletHdNode();
+  const wif = await getWalletWif();
+  const bchAddr =
+    wif && bitbox.ECPair.toCashAddress(bitbox.ECPair.fromWIF(wif));
 
-  const wif = bitbox.HDNode.toWIF(walletHdNode);
   const signature = bitbox.BitcoinCash.signMessageWithPrivKey(
     wif,
     JSON.stringify(payload)
   );
-
-  const legacyAddr = walletHdNode.keyPair.getAddress();
-  const bchAddr = bitbox.Address.toCashAddress(legacyAddr);
 
   return {
     signature,
@@ -146,8 +96,8 @@ export async function storeSpending(sessionId, amountInSats) {
     return Promise.resolve();
   } catch (e) {
     console.log(e);
-    return Promise.reject("[SIGNUP] Failed to store spending");
     Sentry.captureException(e);
+    return Promise.reject("[SIGNUP] Failed to store spending");
   }
 }
 
@@ -164,12 +114,9 @@ export async function getWalletSpendingsBySessionId(sessionId) {
 }
 
 export async function getFrozenUtxos() {
-  
   try {
-
-    const frozenUtxos = await localforage.getItem("SIGNUP_LOCKED_UTXOS")
+    const frozenUtxos = await localforage.getItem("SIGNUP_LOCKED_UTXOS");
     return frozenUtxos ? JSON.parse(frozenUtxos) : {};
-    
   } catch (e) {
     console.log(e);
     Sentry.captureException(e);
@@ -178,39 +125,37 @@ export async function getFrozenUtxos() {
 }
 
 export async function freezeUtxo(txid, vout, reqType, data) {
-  
   try {
-    
-    return await freezeUtxos([{ txid, vout }], reqType, data)
-
+    return await freezeUtxos([{ txid, vout }], reqType, data);
   } catch (e) {
     console.log(e);
     Sentry.captureException(e);
-    
+
     return {};
   }
 }
 
 export async function freezeUtxos(utxos, reqType, data) {
-  
-  let lockedUtxos = {}
+  let lockedUtxos = {};
 
   try {
-    
     lockedUtxos = await getFrozenUtxos();
 
     utxos.forEach(({ txid, vout }) => {
       //Remove any duplicates before adding again
-      const lockedUtxosForTx = (lockedUtxos[txid] || []).filter(outpoint => outpoint.vout !== vout)
-      lockedUtxos[txid] = [...lockedUtxosForTx, { txid, vout, reqType, data }]
-    })
+      const lockedUtxosForTx = (lockedUtxos[txid] || []).filter(
+        (outpoint) => outpoint.vout !== vout
+      );
+      lockedUtxos[txid] = [...lockedUtxosForTx, { txid, vout, reqType, data }];
+    });
 
-    await localforage.setItem("SIGNUP_LOCKED_UTXOS", JSON.stringify(lockedUtxos));
+    await localforage.setItem(
+      "SIGNUP_LOCKED_UTXOS",
+      JSON.stringify(lockedUtxos)
+    );
 
-    return lockedUtxos
-
+    return lockedUtxos;
   } catch (e) {
-
     console.log(e);
     Sentry.captureException(e);
 
@@ -219,13 +164,9 @@ export async function freezeUtxos(utxos, reqType, data) {
 }
 
 export async function unfreezeUtxo(txid, vout) {
-  
   try {
-    
-    return await unfreezeUtxos([{ txid, vout }])
-
+    return await unfreezeUtxos([{ txid, vout }]);
   } catch (e) {
-
     console.log(e);
     Sentry.captureException(e);
 
@@ -234,32 +175,34 @@ export async function unfreezeUtxo(txid, vout) {
 }
 
 export async function unfreezeUtxos(utxos) {
-  
-  let lockedUtxos = {}
+  let lockedUtxos = {};
 
   try {
-    
     lockedUtxos = await getFrozenUtxos();
 
     utxos.forEach(({ txid, vout }) => {
       //Remove from txid
-      const lockedUtxosForTx = (lockedUtxos[txid] || []).filter(outpoint => outpoint.vout !== vout)
+      const lockedUtxosForTx = (lockedUtxos[txid] || []).filter(
+        (outpoint) => outpoint.vout !== vout
+      );
 
       if (!lockedUtxosForTx.length) {
-        delete lockedUtxos[txid]
+        delete lockedUtxos[txid];
       } else {
-        lockedUtxos[txid] = lockedUtxosForTx
+        lockedUtxos[txid] = lockedUtxosForTx;
       }
-    })
+    });
 
-    await localforage.setItem("SIGNUP_LOCKED_UTXOS", JSON.stringify(lockedUtxos));
+    await localforage.setItem(
+      "SIGNUP_LOCKED_UTXOS",
+      JSON.stringify(lockedUtxos)
+    );
 
-    return lockedUtxos
-
+    return lockedUtxos;
   } catch (e) {
     console.log(e);
     Sentry.captureException(e);
-    
+
     return lockedUtxos;
   }
 }
