@@ -1,6 +1,5 @@
 import { h, Fragment } from "preact";
 import { useState } from "preact/hooks";
-import Router from "preact-router";
 import { Link, route } from "preact-router";
 
 import { css } from "emotion";
@@ -14,47 +13,85 @@ import Login from "../common/Login";
 import NewWallet from "./register/NewWallet";
 import ImportWallet from "./register/ImportWallet";
 
-import passworder from "browser-passworder"
+import passworder from "browser-passworder";
 
 export default function () {
-  const [step, setStep] = useState(1)
-  const [isNewWallet, setIsNewWallet] = useState(false)
-  const [key, setKey] = useState()
-  
+  const [step, setStep] = useState(1);
+  const [isNewWallet, setIsNewWallet] = useState(false);
+  const [key, setKey] = useState();
+
   async function handleLogin(email, password) {
-    setKey(await passworder.keyFromPassword(password, btoa(email)))
-    setStep(2)
+    setKey(await passworder.keyFromPassword(password, btoa(email)));
+    setStep(2);
+  }
+
+  function goBack(event) {
+    if (event.stopImmediatePropagation) {
+      event.stopImmediatePropagation();
+    }
+
+    if (event.stopPropagation) {
+      event.stopPropagation();
+    }
+
+    event.preventDefault();
+
+    if (step === 2) {
+      setStep(1);
+    } else {
+      route("/");
+    }
   }
 
   return (
     <>
-      <Article ariaLabel="Create or import a new wallet">
-        <Logo slp />
-        { step === 1 && <Login onLogin={handleLogin} showHints={true}>
-          { isDisabled => <>
-            <Heading highlight number={5} customCss={css`margin:30px 20px !important;`}>
-              Email and password is used for local encryption <u>only</u>
-            </Heading>
-            <Button onClick={() => setIsNewWallet(true)} type="submit" disabled={isDisabled} primary>
-              Create a new wallet
-            </Button>
-            <Button onClick={() => setIsNewWallet(false)} type="submit" disabled={isDisabled} secondary>
-              Import an existing wallet
-            </Button>
-          </>}
-        </Login> }
+      {step === 1 && (
+        <Article ariaLabel="Create or import a new wallet">
+          <Logo slp />
 
-        { step === 2 && isNewWallet && (
-          <NewWallet encryptionKey={key} />
-        )}
+          <Login onLogin={handleLogin} showHints={true}>
+            {(isDisabled) => (
+              <>
+                <Heading
+                  highlight
+                  number={5}
+                  customCss={css`
+                    margin: 30px 20px !important;
+                  `}
+                >
+                  Email and password is used for local encryption <u>only</u>
+                </Heading>
+                <Button
+                  onClick={() => setIsNewWallet(true)}
+                  type="submit"
+                  disabled={isDisabled}
+                  primary
+                >
+                  Create a new wallet
+                </Button>
+                <Button
+                  onClick={() => setIsNewWallet(false)}
+                  type="submit"
+                  disabled={isDisabled}
+                  secondary
+                >
+                  Import an existing wallet
+                </Button>
+              </>
+            )}
+          </Login>
+        </Article>
+      )}
 
-        { step === 2 && !isNewWallet && (
-          <ImportWallet encryptionKey={key} />
-        )}
+      {step === 2 && isNewWallet && <NewWallet encryptionKey={key} />}
 
-      </Article>
+      {step === 2 && !isNewWallet && <ImportWallet encryptionKey={key} />}
+
       <footer style="margin-top:20px">
-        <Link href="/">{`< Back`}</Link>
+        <Link
+          href={step === 1 ? "/" : "/register"}
+          onClick={goBack}
+        >{`< Back`}</Link>
       </footer>
     </>
   );
