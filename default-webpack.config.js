@@ -1,40 +1,45 @@
 const TerserPlugin = require("terser-webpack-plugin");
-const { WebpackPluginServe } = require('webpack-plugin-serve')
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
-const webpack = require('webpack')
-const { merge } = require('webpack-merge')
-const path = require('path')
+const { WebpackPluginServe } = require("webpack-plugin-serve");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const webpack = require("webpack");
+const { merge } = require("webpack-merge");
+const path = require("path");
 
-require('dotenv').config({ 
-  path: path.join(__dirname, "/.env") 
-})
+require("dotenv").config({
+  path: path.join(__dirname, "/.env"),
+});
 
-const isDevEnv = process.env.NODE_ENV === "development"
+const isDevEnv = process.env.NODE_ENV === "development";
 
-module.exports = mergeWithCommonConfig
+module.exports = mergeWithCommonConfig;
 
 function mergeWithCommonConfig(config, { port, static, analyzerPort } = {}) {
-  
   //Use env variable to determine running webpack-serve-plugin
-  const serveApp = (isDevEnv || process.env.FORCE_SERVE_APP === "true") && process.env.FORCE_SERVE_APP !== "false"
-  
-  const serveEntry = serveApp && port ? { 
-    serve: "webpack-plugin-serve/client" 
-  } : {}
+  const serveApp =
+    (isDevEnv || process.env.FORCE_SERVE_APP === "true") &&
+    process.env.FORCE_SERVE_APP !== "false";
 
-  const servePlugin = serveApp && port ? [
-    new WebpackPluginServe({ port, static, historyFallback: true })
-  ] : []
+  const serveEntry =
+    serveApp && port
+      ? {
+          serve: "webpack-plugin-serve/client",
+        }
+      : {};
+
+  const servePlugin =
+    serveApp && port
+      ? [new WebpackPluginServe({ port, static, historyFallback: true })]
+      : [];
 
   return merge(config, {
     entry: {
-      ...serveEntry
+      ...serveEntry,
     },
     resolve: {
       fallback: {
         tls: false,
         net: false,
-        dgram: false
+        dgram: false,
       },
       alias: {
         react: "preact/compat",
@@ -46,7 +51,7 @@ function mergeWithCommonConfig(config, { port, static, analyzerPort } = {}) {
       },
     },
     mode: process.env.NODE_ENV,
-    watch: isDevEnv,
+    watch: isDevEnv || serveApp,
     devtool: "source-map",
     optimization: {
       minimizer: [
@@ -83,10 +88,10 @@ function mergeWithCommonConfig(config, { port, static, analyzerPort } = {}) {
     plugins: [
       ...servePlugin,
       new webpack.ProvidePlugin({
-        process: 'process',
-        Buffer: ['buffer', 'Buffer'],
+        process: "process",
+        Buffer: ["buffer", "Buffer"],
       }),
-      new NodePolyfillPlugin()
-    ]
-  })
+      new NodePolyfillPlugin(),
+    ],
+  });
 }
