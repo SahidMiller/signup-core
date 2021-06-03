@@ -13,9 +13,10 @@ function q(selector, el) {
 }
 
 export async function getWalletWif() {
-  const userWallet = await localforage.getItem("SIGNUP_ACCOUNT");
-  const walletStatus = await localforage.getItem("SIGNUP_ACCOUNT_STATUS");
-  return walletStatus && userWallet;
+  //TODO God willing: handle if ipfs path doesn't exist and/or currentIpfsPath doesn't exist but wallet does or vice versa.
+  const account = await localforage.getItem("SIGNUP_LOGGEDIN_ACCOUNT");
+  const wif = account && account.account && account.account.recieveKey;
+  return wif;
 }
 
 export async function getWalletKeypair() {
