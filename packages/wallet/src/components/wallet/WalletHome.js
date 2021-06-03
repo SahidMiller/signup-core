@@ -35,9 +35,8 @@ export default function ({ clientPayload }) {
   const [balanceInUSD, setBalanceInUSD] = useState(0);
   const [status, setStatus] = useState();
 
-  const { latestSatoshisBalance, utxoIsFetching, bchAddr } = useContext(
-    UtxosContext
-  );
+  const { latestSatoshisBalance, utxoIsFetching, bchAddr } =
+    useContext(UtxosContext);
 
   useEffect(() => {
     if (!latestSatoshisBalance) return;
@@ -62,7 +61,7 @@ export default function ({ clientPayload }) {
         {reqType === "spend_token" && (
           <RequestSpendToken bchAddr={bchAddr} clientPayload={clientPayload} />
         )}
-        
+
         {reqType === "contribution" && (
           <RequestSendContribution clientPayload={clientPayload} />
         )}
@@ -119,7 +118,8 @@ export default function ({ clientPayload }) {
               </Button>
 
               <Heading customCss={css(`margin-top: 32px`)} number={5} highlight>
-                Signup is not designed for storing large amount of funds! Use{" "}
+                This Signup app is designed for storing <u>larger</u> amounts of
+                funds! Refer to{" "}
                 <a
                   href="https://bch.info/en/wallets"
                   target="_blank"
@@ -128,9 +128,9 @@ export default function ({ clientPayload }) {
                     color: #815de3;
                   `}
                 >
-                  alternative wallets
+                  desktop wallets
                 </a>{" "}
-                for that purpose to ensure your safety.
+                for ensuring your safety with larger amounts.
               </Heading>
             </>
           )}

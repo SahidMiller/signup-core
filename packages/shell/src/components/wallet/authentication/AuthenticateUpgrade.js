@@ -4,6 +4,7 @@ import { css } from "emotion";
 import Heading from "../../common/Heading";
 import Login from "../../common/Login";
 import Button from "../../common/Button";
+import useUpgradeIpfsPath from "../../../hooks/useUpgradeIpfsPath";
 
 export default function () {
   const [setAllowUpgrade, requestedUpgradePath, onAuthenticated] =

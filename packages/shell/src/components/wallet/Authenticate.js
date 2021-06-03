@@ -7,7 +7,7 @@ import Heading from "../common/Heading";
 import Article from "../common/Article";
 
 export default function () {
-  const { hasWallets } = useWallet();
+  const { hasAccounts } = useWallet();
 
   return (
     <>
@@ -19,7 +19,7 @@ export default function () {
           send and recieve BCH in web.
         </p>
 
-        {hasWallets && (
+        {hasAccounts && (
           <Button linkTo={"/login"} primary>
             Login
           </Button>

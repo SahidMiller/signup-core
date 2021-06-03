@@ -1,10 +1,12 @@
 import { h, createContext } from "preact";
 import { useEffect, useState, useContext } from "preact/hooks";
 
-import useIpfsAppLoader, { WithIpfsAppLoader } from "../hooks/useIpfsAppLoader";
+import { getSession } from "../utils/session";
+import { checkHasAccounts } from "../utils/accounts";
+import { getRequestedIpfsPath, storeRequestedIpfsPath } from "../utils/session";
 
-import { getWalletAddr } from "../utils/wallet";
-import { checkHasWallets } from "../utils/wallets";
+const BITBOX = require("bitbox-sdk").BITBOX;
+const bitbox = new BITBOX();
 
 const WalletContext = createContext({});
 
@@ -12,58 +14,78 @@ function _useWallet() {
   const [isReady, setIsReady] = useState(false);
 
   //Wallet data
-  const [bchAddr, setBchAddr] = useState();
-  const [walletExist, setWalletExist] = useState();
-  const [hasWallets, setHasWallets] = useState();
+  const [currentSession, setCurrentSession] = useState(null);
+  const [hasAccounts, setHasAccounts] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  //TODO God willing: handle if ipfs path doesn't exist and/or currentIpfsPath doesn't exist but wallet does
+  //TODO God willing: handle if ipfs path doesn't exist and/or currentIpfsPath doesn't exist but wallet does.
   useEffect(() => {
     fetchSavedWallet();
   }, []);
 
   async function fetchSavedWallet() {
-    const hasWallets = await checkHasWallets();
+    const hasAccounts = await checkHasAccounts();
 
-    if (hasWallets) {
-      const walletAddr = await getWalletAddr();
-      const walletExist = !!walletAddr;
+    if (hasAccounts) {
+      const currentAccount = await getSession();
 
-      setWalletExist(walletExist);
-      setBchAddr(walletAddr);
+      setIsLoggedIn(!!currentAccount);
+
+      if (currentAccount) {
+        const { recieveKey, verificationAddress, manifest } = currentAccount;
+
+        //TODO God willing: index or name, coin, etc. of hdnode.
+        const hdNode = bitbox.ECPair.fromWIF(recieveKey);
+        const bchAddr = bitbox.ECPair.toCashAddress(hdNode);
+
+        //TODO God willing: handle if ipfs path doesn't exist and/or currentIpfsPath doesn't exist but wallet does.
+        setCurrentSession({
+          bchAddr,
+          hdNode,
+          verificationAddress,
+          manifest,
+          requestedPluginUpdate: await getRequestedIpfsPath(),
+        });
+
+        storeRequestedIpfsPath(undefined);
+      }
     }
 
-    setHasWallets(hasWallets);
+    setHasAccounts(hasAccounts);
     setIsReady(true);
   }
 
-  return [isReady, hasWallets, walletExist, bchAddr, fetchSavedWallet];
+  return [isReady, hasAccounts, isLoggedIn, currentSession, fetchSavedWallet];
 }
 
 export default function useWallet() {
   return useContext(WalletContext);
 }
 
-export const WithWallet = (Component) => {
-  const WithWalletComp = (props) => {
-    const [isWalletReady, hasWallets, walletExist, bchAddr, refetchWallet] =
-      _useWallet();
-
-    const { isIpfsReady } = useIpfsAppLoader();
+export function WithWallet(Component) {
+  function WithWalletComp(props) {
+    const [
+      isWalletReady,
+      hasAccounts,
+      isLoggedIn,
+      currentSession,
+      refetchWallet,
+    ] = _useWallet();
 
     return (
       <WalletContext.Provider
         value={{
-          isReady: isWalletReady && isIpfsReady,
-          hasWallets,
-          walletExist,
-          bchAddr,
+          isWalletReady,
+          hasAccounts,
+          isLoggedIn,
+          currentSession,
           refetchWallet,
         }}
       >
         {<Component {...props} />}
       </WalletContext.Provider>
     );
-  };
+  }
 
-  return WithIpfsAppLoader(WithWalletComp);
-};
+  return WithWalletComp;
+}

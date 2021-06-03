@@ -10,25 +10,24 @@ import Menu from "./Menu";
 import Avatar from "./Avatar";
 
 export default function ({ clientPayload }) {
-  //TODO God willing: strategy to meet need for security when old sigs can still be used, God willing.
-  const { walletExist, isReady } = useWallet();
-  const { isIpfsPathLoaded, walletComponents, currentRequestedIpfsPath } =
+  const { isLoggedIn, isWalletReady } = useWallet();
+  const { isIpfsPathLoaded, walletComponents, requestedIpfsPath } =
     useIpfsAppLoader();
 
-  const isWalletReady = isReady && walletExist && isIpfsPathLoaded;
+  const isWalletLoaded = isWalletReady && isLoggedIn && isIpfsPathLoaded;
 
   return (
     <>
-      {isReady && !!walletExist && (
+      {isWalletLoaded && !!isLoggedIn && (
         <header>
           <Avatar />
           <Menu />
         </header>
       )}
 
-      {!isWalletReady && (
+      {!isWalletLoaded && (
         <main>
-          {!isReady && (
+          {!isWalletReady && (
             <div
               class={css`
                 text-align: center;
@@ -49,13 +48,13 @@ export default function ({ clientPayload }) {
             </div>
           )}
 
-          {isReady && !walletExist && <Authenticate />}
+          {isWalletReady && !isLoggedIn && <Authenticate />}
 
-          {isReady && !!currentRequestedIpfsPath && <AuthenticateUpgrade />}
+          {isWalletReady && !!requestedIpfsPath && <AuthenticateUpgrade />}
         </main>
       )}
 
-      {isWalletReady && (
+      {isWalletLoaded && (
         <walletComponents.AppRouter clientPayload={clientPayload} />
       )}
     </>

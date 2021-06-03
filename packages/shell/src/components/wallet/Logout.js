@@ -1,24 +1,43 @@
 import { h, Fragment } from "preact";
 import { useState, useEffect } from "preact/hooks";
-import { Link } from "preact-router";
+import { Link, route } from "preact-router";
 import { css } from "emotion";
 import { toast } from "react-toastify";
 import * as Sentry from "@sentry/browser";
-import { deleteWallet } from "../../utils/wallet";
+import { deleteSession } from "../../utils/session";
 import Logo from "../common/Logo";
 import Article from "../common/Article";
 import Heading from "../common/Heading";
 import Button from "../common/Button";
 
 import "../../css/ReactToastify.css";
+import useWallet from "../../hooks/useWallet";
 
 export default function () {
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const { isLoggedIn } = useWallet();
+  const [wasInitiallyLoggedOut] = useState(() => !isLoggedIn);
+  const [isLoggedOut, setIsLoggedOut] = useState(() => !isLoggedIn);
+
+  function redirectHome() {
+    if (window && window.history) {
+      window.history.replaceState({}, "Login", "/");
+    } else if (window) {
+      window.location.href = "/";
+    }
+  }
+
+  useEffect(() => {
+    if (wasInitiallyLoggedOut) {
+      redirectHome();
+    } else if (isLoggedOut) {
+      setTimeout(redirectHome, 1000);
+    }
+  }, [isLoggedOut, wasInitiallyLoggedOut]);
 
   async function handleLogout(e) {
     e.preventDefault();
     try {
-      await deleteWallet();
+      await deleteSession();
       setIsLoggedOut(true);
     } catch (e) {
       toast.error(
@@ -34,7 +53,7 @@ export default function () {
         {!isLoggedOut && <Link href="/">{`< Back to Wallet`}</Link>}
       </header>
       <main>
-        {isLoggedOut ? (
+        {!wasInitiallyLoggedOut && isLoggedOut ? (
           <Article ariaLabel="Logout Form Your Wallet">
             <Heading number={2}>All good! 😇</Heading>
             <p
@@ -42,7 +61,7 @@ export default function () {
                 padding: 16px;
               `}
             >
-              You are logged out. You can safely close this window.
+              You are logged out.
             </p>
           </Article>
         ) : (

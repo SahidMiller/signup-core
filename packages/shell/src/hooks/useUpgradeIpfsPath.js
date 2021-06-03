@@ -1,31 +1,51 @@
 import { useContext, useState } from "preact/hooks";
-import { storeRequestedIpfsPath, updateIpfsPath } from "../utils/ipfs";
-import { findWallet } from "../utils/wallets";
+import { storeRequestedIpfsPath, storeSession } from "../utils/session";
+import {
+  findAccount,
+  storeEncryptedAccount,
+  updateAccount,
+} from "../utils/accounts";
+import passworder from "browser-passworder";
+import useIpfsAppLoader from "./useIpfsAppLoader";
 
 export default function useUpgradeIpfsPath() {
-  const { currentIpfsIndex, currentRequestedIpfsPath } =
-    useContext(IpfsContext);
+  const { currentIpfsIndex, requestedIpfsPath } = useIpfsAppLoader();
   const [allowUpgrade, setAllowUpgrade] = useState(null);
 
-  const onAuthentication = (email, password) => {
+  const onAuthentication = async (email, password) => {
     if (!allowUpgrade) {
       await storeRequestedIpfsPath(null);
       window.location.reload();
     } else {
-      const wif = await findWallet(email, password);
-      const succeeded = await updateIpfsPath(
-        wif,
-        currentRequestedIpfsPath,
-        currentIpfsIndex
-      );
+      const key = await passworder.keyFromPassword(password, btoa(email));
+      const { xpriv, account: originalAccount } =
+        (await findAccount(key)) || {};
 
-      if (succeeded) {
-        window.location.reload();
-      } else {
+      if (!xpriv || !originalAccount) {
+        throw "Invalid login";
+      }
+
+      const { wif, account } =
+        updateAccount(xpriv, originalAccount, {
+          wallet: requestedIpfsPath,
+          index: currentIpfsIndex + 1,
+        }) || {};
+
+      if (!wif || !account) {
+        throw "Invalid login";
+      }
+
+      try {
+        await storeSession(wif, account);
+        await storeEncryptedAccount(key, { xpriv, account });
+
+        //TODO God willing: Better transition?
+        if (window) window.location.href = "/";
+      } catch (err) {
         //TODO God willing: handle failed to save for some reason.
       }
     }
   };
 
-  return [setAllowUpgrade, currentRequestedIpfsPath, onAuthentication];
+  return [setAllowUpgrade, requestedIpfsPath, onAuthentication];
 }

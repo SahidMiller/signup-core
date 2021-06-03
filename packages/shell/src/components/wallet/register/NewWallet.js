@@ -16,8 +16,8 @@ export default function ({ encryptionKey }) {
       await createAccount(encryptionKey, mnemonic);
     } catch (e) {
       console.log(e);
-      toast.error("There is an error while importing your wallet!");
       Sentry.captureException(e);
+      toast.error("There is an error while creating your wallet!");
     }
   }
 

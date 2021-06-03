@@ -1,9 +1,8 @@
 import { h, Fragment } from "preact";
-import Router, { Route } from "preact-router";
+import Router from "preact-router";
 
 import usePostMessage from "../hooks/usePostMessage";
-import useIpfsAppLoader from "../hooks/useIpfsAppLoader";
-import { WithWallet } from "../hooks/useWallet";
+import { WithIpfsAppLoader } from "../hooks/useIpfsAppLoader";
 
 import { ToastContainer } from "react-toastify";
 import * as Sentry from "@sentry/browser";
@@ -43,4 +42,4 @@ function App() {
   );
 }
 
-export default WithWallet(App);
+export default WithIpfsAppLoader(App);

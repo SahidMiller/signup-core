@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 
-import { storeRequestedIpfsPath } from "../utils/ipfs";
+import { storeRequestedIpfsPath } from "../utils/session";
 
 import { toast } from "react-toastify";
 

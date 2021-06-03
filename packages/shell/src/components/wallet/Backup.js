@@ -12,7 +12,6 @@ import Heading from "signup-app/Heading";
 import Input from "signup-app/Input";
 import Button from "signup-app/Button";
 import Checkbox from "signup-app/Checkbox";
-import * as wallet from "../../utils/wallet";
 import useWallet from "../../hooks/useWallet";
 import RecoveryPhrases from "signup-app/RecoveryPhrases";
 

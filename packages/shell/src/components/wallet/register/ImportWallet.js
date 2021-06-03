@@ -15,7 +15,7 @@ import * as Sentry from "@sentry/browser";
 import { toast } from "react-toastify";
 
 export default function ({ encryptionKey }) {
-  const { walletExist, refetchWallet } = useWallet();
+  const { isLoggedIn, refetchWallet } = useWallet();
   const [createAccount, isPendingIpfs] = useCreateSignupAccount();
   const [walletMnemonic, setWalletMnemonic] = useState();
 
@@ -51,7 +51,7 @@ export default function ({ encryptionKey }) {
             {isPendingIpfs && (
               <Loading text="Fetching latest wallet code ... 🔒" />
             )}
-            {walletExist ? (
+            {isLoggedIn ? (
               <p>
                 You already have an active wallet. If you want to import a new
                 one, you have to log out from the previous one. Use the menu on

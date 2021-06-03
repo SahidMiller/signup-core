@@ -1,26 +1,28 @@
 import { h, createContext } from "preact";
-import { useEffect, useState, useContext } from "preact/hooks";
-
-import { checkHasWallets } from "../utils/wallets";
-import { getWalletVerificationAddress } from "../utils/wallet";
-import { getLastUsedIpfsPath, getRequestedIpfsPath } from "../utils/ipfs";
+import { useContext } from "preact/hooks";
 
 import useIpfsUpdateToaster from "../hooks/useIpfsUpdateToaster";
 import useIpfsLoader from "../hooks/useIpfsLoader";
 import useGatewayIpns from "./useGatewayIpns";
+import useWallet, { WithWallet } from "./useWallet";
+
 import { SIGNUP_WALLET_IPNS } from "../config";
 
 const IpfsAppContext = createContext({});
 
-function useIpfsAppLoader() {
-  const [isReady, setIsReady] = useState(false);
+function _useIpfsAppLoader() {
+  const { isWalletReady, currentSession } = useWallet();
 
-  const [currentIpfsPath, setCurrentIpfsPath] = useState(null);
-  const [currentIpfsIndex, setCurrentIpfsIndex] = useState(null);
-  const [requestedIpfsPath, setRequestedIpfsPath] = useState(null);
-  const [verificationAddress, setVerificationAddress] = useState(null);
+  const {
+    manifest,
+    verificationAddress,
+    requestedPath: requestedIpfsPath,
+  } = currentSession || {};
+
+  const { wallet: currentIpfsPath, index: currentIpfsIndex } = manifest || {};
+
   const [isIpfsPathLoaded, hasIpfsPathFailedLoad, walletComponents] =
-    useIpfsLoader(isReady, currentIpfsPath, requestedIpfsPath);
+    useIpfsLoader(isWalletReady, currentIpfsPath, requestedIpfsPath);
   const [latestIpfsPath, checkForIpfsUpdates] =
     useGatewayIpns(SIGNUP_WALLET_IPNS);
 
@@ -31,40 +33,7 @@ function useIpfsAppLoader() {
     hasIpfsPathFailedLoad
   );
 
-  async function fetchSavedIpfsWallet() {
-    const hasWallets = await checkHasWallets();
-
-    if (hasWallets) {
-      const verificationAddress = await getWalletVerificationAddress();
-
-      //TODO God willing: handle if deleted by asking user to input a CID
-      //TODO God willing: also allow user to pass in ipfs path in general
-      //TODO God willing: handle when nothing returned?
-      const { path, index } = await getLastUsedIpfsPath(verificationAddress);
-
-      //Fetches to see if user requested an update
-      const requestedPath = await getRequestedIpfsPath();
-
-      //Does not fetch ipfs path/plugins until user approves if it's there, God willing
-      setVerificationAddress(verificationAddress);
-      setCurrentIpfsPath(path);
-      setCurrentIpfsIndex(index);
-      setRequestedIpfsPath(requestedPath);
-    }
-
-    checkForIpfsUpdates();
-    setIsReady(true);
-  }
-
-  //TODO God willing: Load existing signed path and public key, God willing.
-  //TODO God willing: handle if ipfs path doesn't exist and/or currentIpfsPath doesn't exist but wallet does.
-  useEffect(() => {
-    fetchSavedIpfsWallet();
-    checkForIpfsUpdates();
-  }, []);
-
   return [
-    isReady,
     verificationAddress,
     currentIpfsPath,
     currentIpfsIndex,
@@ -76,38 +45,38 @@ function useIpfsAppLoader() {
   ];
 }
 
-export default function () {
+export default function useIpfsAppLoader() {
   return useContext(IpfsAppContext);
 }
 
-export const WithIpfsAppLoader = (Component) => (props) => {
-  const [
-    isIpfsReady,
-    verificationAddress,
-    currentIpfsPath,
-    currentIpfsIndex,
-    requestedIpfsPath,
-    latestIpfsPath,
-    isIpfsPathLoaded,
-    walletComponents,
-    checkForIpfsUpdates,
-  ] = useIpfsAppLoader();
+export function WithIpfsAppLoader(Component) {
+  return WithWallet((props) => {
+    const [
+      verificationAddress,
+      currentIpfsPath,
+      currentIpfsIndex,
+      requestedIpfsPath,
+      latestIpfsPath,
+      isIpfsPathLoaded,
+      walletComponents,
+      checkForIpfsUpdates,
+    ] = _useIpfsAppLoader();
 
-  return (
-    <IpfsAppContext.Provider
-      value={{
-        isIpfsReady,
-        verificationAddress,
-        currentIpfsPath,
-        currentIpfsIndex,
-        requestedIpfsPath,
-        latestIpfsPath,
-        isIpfsPathLoaded,
-        walletComponents,
-        checkForIpfsUpdates,
-      }}
-    >
-      <Component {...props} />
-    </IpfsAppContext.Provider>
-  );
-};
+    return (
+      <IpfsAppContext.Provider
+        value={{
+          verificationAddress,
+          currentIpfsPath,
+          currentIpfsIndex,
+          requestedIpfsPath,
+          latestIpfsPath,
+          isIpfsPathLoaded,
+          walletComponents,
+          checkForIpfsUpdates,
+        }}
+      >
+        <Component {...props} />
+      </IpfsAppContext.Provider>
+    );
+  });
+}
