@@ -3,9 +3,10 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: IPFS_GATEWAY_HOST="https://gateway.ipfs.io"
-      SIGNUP_WALLET_ENTRY_PATH="/js/signupCoreEntry.js"
-      SIGNUP_WALLET_IPNS="k51qzi5uqu5dgag0pfgxzsr6rpk3egk9gmmt3xn79568uipkp1d0v0wc60lgsh"
+    env: 
+      IPFS_GATEWAY_HOST: https://gateway.ipfs.io
+      SIGNUP_WALLET_ENTRY_PATH: /js/signupCoreEntry.js
+      SIGNUP_WALLET_IPNS: k51qzi5uqu5dgag0pfgxzsr6rpk3egk9gmmt3xn79568uipkp1d0v0wc60lgsh
     name: build project
     steps:
       - name: Checkout repository code
