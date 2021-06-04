@@ -69,7 +69,7 @@ jobs:
           ipfs_version: 0.8
       - name: Publish packages to IPNS
         run: |
-          ipfs name publish --key=publish_${{ matrix.project }} $(echo "${{ needs.ipfs.outputs[format(’{0}-hash, matrix.project)] }}")
+          ipfs name publish --key=publish_${{ matrix.project }} $(echo "${{ needs.ipfs.outputs[format(’{0}-hash', matrix.project)] }}")
   preload-ipfs:
     runs-on: ubuntu-latest
     needs: ipfs
@@ -91,7 +91,7 @@ jobs:
           ipfs_version: 0.8
       - name: Preload IPFS on Gateways
         run: |
-          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail ${{ matrix.gateway }}/ipfs/$(echo "${{ needs.ipfs.outputs[format(’{0}-hash, matrix.project)] }}")
+          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail ${{ matrix.gateway }}/ipfs/$(echo "${{ needs.ipfs.outputs[format(’{0}-hash', matrix.project)] }}")
   preload-ipns:
     runs-on: ubuntu-latest
     needs: ipns
@@ -112,4 +112,4 @@ jobs:
           ipfs_version: 0.8
       - name: Preload IPNS on Gateways
         run: |
-          curl --write-out 'IPNS Status: %{http_code}\n' --silent --output /dev/null --fail ${{ matrix.gateway }}/ipns/$(echo "${{ needs.ipfs.outputs[format(’{0}-key, matrix.project)] }}")
+          curl --write-out 'IPNS Status: %{http_code}\n' --silent --output /dev/null --fail ${{ matrix.gateway }}/ipns/$(echo "${{ needs.ipfs.outputs[format(’{0}-key', matrix.project)] }}")
