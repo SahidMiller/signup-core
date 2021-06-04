@@ -21,6 +21,14 @@ jobs:
         run: yarn install
       - name: Build project
         run: npx lerna run build --scope=@signupcash/shell --scope=@signupcash/wallet
+      - uses: actions/upload-artifact@v2
+        with:
+          name: shell-build-folder
+          path: ./packages/shell/public
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wallet-build-folder
+          path: ./packages/wallet/public
   ipfs:
     runs-on: ubuntu-latest
     needs: build
@@ -39,6 +47,12 @@ jobs:
         with:
           path: ~/.ipfs
           key: ipfs
+      - uses: actions/download-artifact@v2
+        with:
+          name: shell-build-folder
+      - uses: actions/download-artifact@v2
+        with:
+          name: wallet-build-folder
       - name: Start IPFS
         uses: ibnesayeed/setup-ipfs@master
         with:
