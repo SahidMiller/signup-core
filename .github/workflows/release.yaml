@@ -46,7 +46,7 @@ jobs:
       - name: Import IPNS key
         id: key
         run: |
-          echo "::set-output name=${{ matrix.project.name }}-key::$(echo $(echo "${{ secrets[format(’{0}, matrix.project.key)] }}") | xxd -r -p | ipfs key import publish_${{ matrix.project.name }} -)"
+          echo "::set-output name=${{ matrix.project.name }}-key::$(echo $(echo "${{ secrets[format(’{0}', matrix.project.key)] }}") | xxd -r -p | ipfs key import publish_${{ matrix.project.name }} -)"
       - name: Upload build to IPFS
         id: ipfs
         run: |
