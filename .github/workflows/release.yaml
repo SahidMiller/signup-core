@@ -32,24 +32,24 @@ jobs:
           - name: wallet
             key: ${{ secrets.WALLET_IPNS_KEY }}
             dist: ./packages/wallet/public
-      steps:
-        - name: Cache .ipfs folder
-          uses: actions/cache@v2
-          with:
-            path: ~/.ipfs
-        - name: Start IPFS
-          uses: ibnesayeed/setup-ipfs@master
-          with:
-            run_daemon: true
-            ipfs_version: 0.8
-        - name: Import IPNS key
-          id: key
-          run: |
-            echo "::set-output name=${{ matrix.project.name }}-key::$(echo ${{ matrix.project.key }} | xxd -r -p | ipfs key import publish_${{ matrix.project.name }} -)"
-        - name: Upload build to IPFS
-          id: ipfs
-          run: |
-            echo "::set-output name=${{ matrix.project.name }}-hash::$(ipfs add -rQ ${{ matrix.project.dist }})"
+    steps:
+      - name: Cache .ipfs folder
+        uses: actions/cache@v2
+        with:
+          path: ~/.ipfs
+      - name: Start IPFS
+        uses: ibnesayeed/setup-ipfs@master
+        with:
+          run_daemon: true
+          ipfs_version: 0.8
+      - name: Import IPNS key
+        id: key
+        run: |
+          echo "::set-output name=${{ matrix.project.name }}-key::$(echo ${{ matrix.project.key }} | xxd -r -p | ipfs key import publish_${{ matrix.project.name }} -)"
+      - name: Upload build to IPFS
+        id: ipfs
+        run: |
+          echo "::set-output name=${{ matrix.project.name }}-hash::$(ipfs add -rQ ${{ matrix.project.dist }})"
   ipns:
     runs-on: ubuntu-latest
     needs: ipfs
