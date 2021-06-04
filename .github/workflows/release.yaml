@@ -68,6 +68,9 @@ jobs:
         with:
           name: ipfs-directory
           path: ~/.ipfs
+    outputs:
+      shell-hash: ${{ steps.ipfs.outputs.shell-hash }}
+      wallet-hash: ${{ steps.ipfs.outputs.wallet-hash }}
   ipns:
     runs-on: ubuntu-latest
     needs: ipfs
