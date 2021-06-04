@@ -30,6 +30,7 @@ jobs:
           name: wallet-build-folder
           path: ./packages/wallet/public
   ipfs:
+    name: publish to ipfs
     runs-on: ubuntu-latest
     needs: build
     strategy:
@@ -61,79 +62,26 @@ jobs:
         id: ipfs
         run: |
           echo "::set-output name=${{ matrix.project.name }}-hash::$( ipfs add -rQ ./packages/${{ matrix.project.name }}/public )"
-      - name: Check hash
-        if: ${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] == '' }}
-        run: exit 1
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ipfs-directory
-          path: ~/.ipfs
-    outputs:
-      shell-hash: ${{ steps.ipfs.outputs.shell-hash }}
-      wallet-hash: ${{ steps.ipfs.outputs.wallet-hash }}
-  ipns:
-    runs-on: ubuntu-latest
-    needs: ipfs
-    strategy:
-      matrix:
-        project: [shell, wallet]
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: ipfs-directory
-          path: ~/.ipfs
-      - name: Start IPFS
-        uses: ibnesayeed/setup-ipfs@master
-        with:
-          run_daemon: true
-          ipfs_version: 0.8
       - name: Publish packages to IPNS
         run: |
-          echo "${{ needs.ipfs.outputs }}"
-          echo "${{ needs.ipfs.outputs.ipfs }}"
-          echo "${{ needs.ipfs.outputs.shell-hash }}"
-          echo "${{ needs.ipfs.outputs.wallet-hash }}"
-          ipfs name publish --key=publish_${{ matrix.project }} ${{ needs.ipfs.outputs[format('{0}-hash', matrix.project)] }}
-  preload-ipfs:
-    runs-on: ubuntu-latest
-    needs: ipfs
-    strategy:
-      matrix:
-        project: [shell, wallet]
-        gateway:
-          - http://localhost:8080
-          - https://ipfs.io
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: ipfs-directory
-          path: ~/.ipfs
-      - name: Start IPFS
-        uses: ibnesayeed/setup-ipfs@master
-        with:
-          run_daemon: true
-          ipfs_version: 0.8
-      - name: Preload IPFS on Gateways
+          ipfs name publish --key=publish_${{ matrix.project.name }} ${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}
+      - name: Preload IPFS on Local Gateway
         run: |
-          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail ${{ matrix.gateway }}/ipfs/$(echo "${{ needs.ipfs.outputs[format('{0}-hash', matrix.project)] }}")
-  preload-ipns:
-    runs-on: ubuntu-latest
-    needs: ipns
-    strategy:
-      matrix:
-        gateway:
-          - http://localhost:8080
-          - https://ipfs.io
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: ipfs-directory
-          path: ~/.ipfs
-      - name: Start IPFS
-        uses: ibnesayeed/setup-ipfs@master
-        with:
-          run_daemon: true
-          ipfs_version: 0.8
-      - name: Preload IPNS on Gateways
+          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://localhost:8080/ipfs/${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}
+      - name: Preload IPFS on Public Gateway
         run: |
-          curl --write-out 'IPNS Status: %{http_code}\n' --silent --output /dev/null --fail ${{ matrix.gateway }}/ipns/$(echo "${{ needs.ipfs.outputs[format('{0}-key', matrix.project)] }}")
+          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://ipfs.io/ipfs/${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}
+      - name: Preload IPNS on Local Gateway
+        run: |
+          curl --write-out 'IPNS Status: %{http_code}\n' --silent --output /dev/null --fail http://localhost:8080/ipns/${{ steps.ipfs.outputs[format('{0}-key', matrix.project.name)] }}
+      - name: Preload IPNS on Public Gateway
+        run: |
+          curl --write-out 'IPNS Status: %{http_code}\n' --silent --output /dev/null --fail  http://ipfs.io/ipns/${{ steps.ipfs.outputs[format('{0}-key', matrix.project.name)] }}
+      - name: Preload IPFS on Gateways via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail -X POST "http://127.0.0.1:5001/api/v0/get?arg=${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}"
