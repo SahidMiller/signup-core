@@ -18,5 +18,5 @@ export default async function resolveLatestIpns(address, nocache) {
   );
   const { Path } = await response.json();
 
-  return path && IPFS_GATEWAY_HOST + Path;
+  return Path && IPFS_GATEWAY_HOST + Path;
 }
