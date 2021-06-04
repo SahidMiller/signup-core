@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: 
+    env:
       IPFS_GATEWAY_HOST: https://gateway.ipfs.io
       SIGNUP_WALLET_ENTRY_PATH: /js/signupCoreEntry.js
       SIGNUP_WALLET_IPNS: k51qzi5uqu5dgag0pfgxzsr6rpk3egk9gmmt3xn79568uipkp1d0v0wc60lgsh
@@ -37,22 +37,17 @@ jobs:
         project:
           - name: shell
             key: SHELL_IPNS_KEY
-            dist: ./packages/shell/public
           - name: wallet
             key: WALLET_IPNS_KEY
-            dist: ./packages/wallet/public
     steps:
-      - name: Cache .ipfs folder
-        uses: actions/cache@v2
-        with:
-          path: ~/.ipfs
-          key: ipfs
       - uses: actions/download-artifact@v2
         with:
           name: shell-build-folder
+          path: ./packages/shell/public
       - uses: actions/download-artifact@v2
         with:
           name: wallet-build-folder
+          path: ./packages/wallet/public
       - name: Start IPFS
         uses: ibnesayeed/setup-ipfs@master
         with:
@@ -65,7 +60,14 @@ jobs:
       - name: Upload build to IPFS
         id: ipfs
         run: |
-          echo "::set-output name=${{ matrix.project.name }}-hash::$(ipfs add -rQ ${{ matrix.project.dist }})"
+          echo "::set-output name=${{ matrix.project.name }}-hash::$( ipfs add -rQ ./packages/${{ matrix.project.name }}/public )"
+      - name: Check hash
+        if: ${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] == '' }}
+        run: exit 1
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ipfs-directory
+          path: ~/.ipfs
   ipns:
     runs-on: ubuntu-latest
     needs: ipfs
@@ -73,11 +75,10 @@ jobs:
       matrix:
         project: [shell, wallet]
     steps:
-      - name: Cache .ipfs folder
-        uses: actions/cache@v2
+      - uses: actions/download-artifact@v2
         with:
+          name: ipfs-directory
           path: ~/.ipfs
-          key: ipfs
       - name: Start IPFS
         uses: ibnesayeed/setup-ipfs@master
         with:
@@ -85,7 +86,11 @@ jobs:
           ipfs_version: 0.8
       - name: Publish packages to IPNS
         run: |
-          ipfs name publish --key=publish_${{ matrix.project }} $(echo "${{ needs.ipfs.outputs[format('{0}-hash', matrix.project)] }}")
+          echo "${{ needs.ipfs.outputs }}"
+          echo "${{ needs.ipfs.outputs.ipfs }}"
+          echo "${{ needs.ipfs.outputs.shell-hash }}"
+          echo "${{ needs.ipfs.outputs.wallet-hash }}"
+          ipfs name publish --key=publish_${{ matrix.project }} ${{ needs.ipfs.outputs[format('{0}-hash', matrix.project)] }}
   preload-ipfs:
     runs-on: ubuntu-latest
     needs: ipfs
@@ -96,11 +101,10 @@ jobs:
           - http://localhost:8080
           - https://ipfs.io
     steps:
-      - name: Cache .ipfs folder
-        uses: actions/cache@v2
+      - uses: actions/download-artifact@v2
         with:
+          name: ipfs-directory
           path: ~/.ipfs
-          key: ipfs
       - name: Start IPFS
         uses: ibnesayeed/setup-ipfs@master
         with:
@@ -118,11 +122,10 @@ jobs:
           - http://localhost:8080
           - https://ipfs.io
     steps:
-      - name: Cache .ipfs folder
-        uses: actions/cache@v2
+      - uses: actions/download-artifact@v2
         with:
+          name: ipfs-directory
           path: ~/.ipfs
-          key: ipfs
       - name: Start IPFS
         uses: ibnesayeed/setup-ipfs@master
         with:
