@@ -28,10 +28,10 @@ jobs:
       matrix:
         project:
           - name: shell
-            key: ${{ secrets.SHELL_IPNS_KEY }}
+            key: SHELL_IPNS_KEY
             dist: ./packages/shell/public
           - name: wallet
-            key: ${{ secrets.WALLET_IPNS_KEY }}
+            key: WALLET_IPNS_KEY
             dist: ./packages/wallet/public
     steps:
       - name: Cache .ipfs folder
@@ -46,7 +46,7 @@ jobs:
       - name: Import IPNS key
         id: key
         run: |
-          echo "::set-output name=${{ matrix.project.name }}-key::$(echo ${{ matrix.project.key }} | xxd -r -p | ipfs key import publish_${{ matrix.project.name }} -)"
+          echo "::set-output name=${{ matrix.project.name }}-key::$(echo $(echo "${{ secrets[format(’{0}, matrix.project.key)] }}") | xxd -r -p | ipfs key import publish_${{ matrix.project.name }} -)"
       - name: Upload build to IPFS
         id: ipfs
         run: |
