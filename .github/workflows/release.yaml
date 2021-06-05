@@ -75,7 +75,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            curl -w 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail -X POST "http://127.0.0.1:5001/api/v0/dag/get?arg=${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}"
+            curl -w 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail -X POST "http://127.0.0.1:5001/api/v0/refs?r=true&arg=${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}"
       - name: Preload IPFS on Public Gateway
         run: |
           curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://ipfs.io/ipfs/${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}
