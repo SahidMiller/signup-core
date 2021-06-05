@@ -54,6 +54,9 @@ jobs:
         with:
           run_daemon: true
           ipfs_version: 0.8
+      - name: Connect Remote Node
+        run: |
+          ipfs swarm connect /ip4/${{ secrets.HOST }}/tcp/4001/p2p/${{ secrets.MULTIADDRS }}
       - name: Import IPNS key
         id: key
         run: |
