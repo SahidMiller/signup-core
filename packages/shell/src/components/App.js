@@ -1,5 +1,6 @@
 import { h, Fragment } from "preact";
 import Router from "preact-router";
+import { createHashHistory } from "history";
 
 import usePostMessage from "../hooks/usePostMessage";
 import { WithIpfsAppLoader } from "../hooks/useIpfsAppLoader";
@@ -30,7 +31,7 @@ function App() {
 
   return (
     <>
-      <Router>
+      <Router history={createHashHistory()}>
         <Home default path="/" clientPayload={clientPayload} />
         <Logout path="/logout" />
         <Register path="/register" />

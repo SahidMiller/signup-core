@@ -19,11 +19,8 @@ export default function () {
   const [isLoggedOut, setIsLoggedOut] = useState(() => !isLoggedIn);
 
   function redirectHome() {
-    if (window && window.history) {
-      window.history.replaceState({}, "Login", "/");
-    } else if (window) {
-      window.location.href = "/";
-    }
+    route("/", true);
+    window && window.location.reload();
   }
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import {
 } from "../utils/accounts";
 import passworder from "browser-passworder";
 import useIpfsAppLoader from "./useIpfsAppLoader";
+import { route } from "preact-router";
 
 export default function useUpgradeIpfsPath() {
   const { currentIpfsIndex, requestedIpfsPath } = useIpfsAppLoader();
@@ -40,7 +41,8 @@ export default function useUpgradeIpfsPath() {
         await storeEncryptedAccount(key, { xpriv, account });
 
         //TODO God willing: Better transition?
-        if (window) window.location.href = "/";
+        route("/", true);
+        window && window.location.reload();
       } catch (err) {
         //TODO God willing: handle failed to save for some reason.
       }

@@ -10,6 +10,7 @@ import {
 } from "../utils/accounts";
 
 import { toast } from "react-toastify";
+import { route } from "preact-router";
 
 export default function useCreateSignupAccount() {
   const { latestIpfsPath } = useIpfsAppLoader();
@@ -52,7 +53,8 @@ export default function useCreateSignupAccount() {
       await storeEncryptedAccount(encryptionKey, { xpriv, account });
 
       //TODO God willing: Better transition?
-      if (window) window.location.href = "/";
+      route("/", true);
+      window && window.location.reload();
     } catch (err) {
       await deleteSession();
       throw err;

@@ -27,6 +27,7 @@
     "electrum-cash": "^2.0.6",
     "emotion": "^10.0.27",
     "hash.js": "^1.1.7",
+    "history": "^5.0.0",
     "idb-keyval": "^5.0.5",
     "jsonwebtoken": "^8.5.1",
     "localforage": "^1.9.0",

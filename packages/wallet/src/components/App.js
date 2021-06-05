@@ -1,5 +1,6 @@
 import { h, Fragment } from "preact";
 import Router from "preact-router";
+import { createHashHistory } from "history";
 
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
@@ -27,7 +28,7 @@ Sentry.init({
 function AppRouter({ clientPayload }) {
   return (
     <>
-      <Router>
+      <Router history={createHashHistory()}>
         <WalletHome default path="/" clientPayload={clientPayload} />
         <Topup path="/top-up" clientPayload={clientPayload} />
         <Send path="/send" clientPayload={clientPayload} />
