@@ -5,9 +5,10 @@ import { createHashHistory } from "history";
 import usePostMessage from "../hooks/usePostMessage";
 import { WithIpfsAppLoader } from "../hooks/useIpfsAppLoader";
 
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
+//import CID from "cids";
 
 import Home from "./wallet/Home";
 import Logout from "./wallet/Logout";
@@ -29,6 +30,18 @@ Sentry.init({
 
 function App() {
   const [clientPayload] = usePostMessage({});
+
+  const [match, cid] = window.location.href.match(
+    /\/ipfs\/([A-Za-z0-9]*)(?:\/|$)/
+  ) || [false];
+
+  if (match && cid) {
+    //TODO God willing: forever on redirect to this page if brought up?
+    //TODO God willing: Open and check if it's working via window.opener?
+    toast.warn(
+      "Be careful! Using this wallet /ipfs/Qm... is considered dangerous. Use a subdomain instead. Learn more!"
+    );
+  }
 
   return (
     <>

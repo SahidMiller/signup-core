@@ -24,6 +24,7 @@
     "bitbox-sdk": "^8.11.2",
     "bitcore-lib-cash": "^8.24.2",
     "browser-passworder": "^2.0.3",
+    "cids": "^1.1.6",
     "core-js": "^3.6.5",
     "delay": "^4.4.0",
     "electrum-cash": "^2.0.6",
