@@ -5,7 +5,7 @@ import localforage from "localforage";
 import { SIGNUP_REQUESTED_IPFS_PATH } from "../config";
 
 export async function getRequestedIpfsPath() {
-  return;
+  return localforage.getItem(SIGNUP_REQUESTED_IPFS_PATH);
 }
 
 export async function storeRequestedIpfsPath(path) {
