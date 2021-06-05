@@ -37,7 +37,6 @@ function AppRouter({ clientPayload }) {
         <TokenPage path="/token" />
         <Contributions path="/contributions" />
       </Router>
-      {/* <ToastContainer position="bottom-center" draggable /> */}
     </>
   );
 }

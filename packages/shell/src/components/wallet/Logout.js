@@ -10,7 +10,6 @@ import Article from "../common/Article";
 import Heading from "../common/Heading";
 import Button from "../common/Button";
 
-import "../../css/ReactToastify.css";
 import useWallet from "../../hooks/useWallet";
 
 export default function () {

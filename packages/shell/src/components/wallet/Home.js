@@ -19,7 +19,7 @@ export default function ({ clientPayload }) {
   return (
     <>
       {isWalletLoaded && !!isLoggedIn && (
-        <header>
+        <header style="min-height:40px;">
           <Avatar />
           <Menu />
         </header>

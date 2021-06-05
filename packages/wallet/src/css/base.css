@@ -17,3 +17,15 @@ a:focus {
 a:active {
   color: black;
 }
+
+.Toastify > .signup-toaster-container {
+  z-index: 9999;
+  transform: translate(-50%);
+  left: 50%;
+  position: fixed;
+  padding: 4px;
+  width: 320px;
+  box-sizing: border-box;
+  color: #fff;
+  bottom: 1em;
+}

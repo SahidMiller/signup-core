@@ -13,6 +13,7 @@ import Home from "./wallet/Home";
 import Logout from "./wallet/Logout";
 
 import "../css/base.css";
+import "../css/ReactToastify.css";
 
 import Register from "./wallet/Register";
 import Login from "./wallet/Login";
@@ -38,7 +39,11 @@ function App() {
         <Login path="/login" />
       </Router>
 
-      <ToastContainer position="bottom-center" draggable />
+      <ToastContainer
+        position="bottom-center"
+        draggable
+        className={() => "signup-toaster-container"}
+      />
     </>
   );
 }
