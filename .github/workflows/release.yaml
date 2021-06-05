@@ -64,7 +64,7 @@ jobs:
           echo "::set-output name=${{ matrix.project.name }}-hash::$( ipfs add -rQ ./packages/${{ matrix.project.name }}/public )"
       - name: Preload IPFS on Local Gateway
         run: |
-          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail http://localhost:8080/ipfs/${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}
+          curl --write-out 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail -L http://localhost:8080/ipfs/${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}
       - name: Preload IPFS on Private Gateway via SSH
         uses: appleboy/ssh-action@master
         with:
