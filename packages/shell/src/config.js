@@ -16,8 +16,8 @@ export const SIGNUP_WALLET_ENTRY_HOST = process.env.SIGNUP_WALLET_ENTRY_HOST;
 
 const entryPath = process.env.SIGNUP_WALLET_ENTRY_PATH;
 export const SIGNUP_WALLET_ENTRY_PATH = entryPath
-  ? entryPath.replace(/^\//, "")
-  : "js/signupCoreEntry.js";
+  ? "/" + entryPath.replace(/^\//, "")
+  : "/js/signupCoreEntry.js";
 
 export const SIGNUP_WALLET_IPNS = process.env.SIGNUP_WALLET_IPNS;
 
