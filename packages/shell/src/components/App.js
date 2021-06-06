@@ -18,6 +18,7 @@ import "../css/ReactToastify.css";
 
 import Register from "./wallet/Register";
 import Login from "./wallet/Login";
+import { useEffect } from "preact/hooks";
 
 Sentry.init({
   dsn: "https://ed7dcd826ee742e59b9247fcb1e2a141@o466710.ingest.sentry.io/5481245",
@@ -31,17 +32,19 @@ Sentry.init({
 function App() {
   const [clientPayload] = usePostMessage({});
 
-  const [match, cid] = window.location.href.match(
-    /\/ipfs\/([A-Za-z0-9]*)(?:\/|$)/
-  ) || [false];
+  useEffect(() => {
+    const [match, cid] = window.location.href.match(
+      /\/ipfs\/([A-Za-z0-9]*)(?:\/|$)/
+    ) || [false];
 
-  if (match && cid) {
-    //TODO God willing: forever on redirect to this page if brought up?
-    //TODO God willing: Open and check if it's working via window.opener?
-    toast.warn(
-      "Be careful! Using this wallet /ipfs/Qm... is considered dangerous. Use a subdomain instead. Learn more!"
-    );
-  }
+    if (match && cid) {
+      //TODO God willing: forever on redirect to this page if brought up?
+      //TODO God willing: Open and check if it's working via window.opener?
+      toast.warn(
+        "Be careful! Using this wallet /ipfs/Qm... is considered dangerous. Use a subdomain instead. Learn more!"
+      );
+    }
+  }, []);
 
   return (
     <>
