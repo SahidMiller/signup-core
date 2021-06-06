@@ -10,14 +10,14 @@ export default function () {
   const { isIpfsPathLoaded } = useIpfsAppLoader();
 
   return (
-    <Menu styles={menuStyles} width={"200px"} right pageWrapId="body-wrap">
+    <Menu styles={menuStyles} width={"230px"} right pageWrapId="body-wrap">
       <a href="/">Home</a>
       {isIpfsPathLoaded && [
         <a href="/top-up">Topup</a>,
         <a href="/send">Send</a>,
         <a href="/tokens">Tokens</a>,
         <a href="/NFTs">NFTs</a>,
-        <a href="/contributions">Contributions</a>,
+        <a href="/crowdfunding">Contributions</a>,
         <a href="/backup">Backup</a>,
       ]}
       <a href="/logout">Logout</a>
@@ -25,8 +25,9 @@ export default function () {
         class={css`
           position: absolute;
           bottom: 40px;
+          right: 12px;
           text-align: center;
-          font-size: 13px;
+          font-size: 14px;
         `}
       >
         Support: hello@signup.cash

@@ -8,7 +8,7 @@ import Send from "./wallet/Send";
 import SLPTokens from "./wallet/SLPTokens";
 import NFTs from "./wallet/NFTs";
 import TokenPage from "./wallet/TokenPage";
-import Contributions from "./wallet/Contributions";
+import Crowdfunding from "./wallet/Crowdfunding";
 import WithUtxos from "./WithUtxos";
 
 function AppRouter({ clientPayload }) {
@@ -21,7 +21,7 @@ function AppRouter({ clientPayload }) {
         <SLPTokens path="/tokens" />
         <NFTs path="/NFTs" />
         <TokenPage path="/token" />
-        <Contributions path="/contributions" />
+        <Crowdfunding path="/crowdfunding" />
       </Router>
     </>
   );
