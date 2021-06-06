@@ -4,6 +4,7 @@ const { ModuleFederationPlugin } = webpack.container;
 const merge = require("../../default-webpack.config.js");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const DagEntryPlugin = require("webpack-dag-entry-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = merge(
   {
@@ -56,11 +57,14 @@ module.exports = merge(
         filename: "../dist/dagEntry.js",
       }),
       //http://localhost:5050/pluginEntry.js
+      //TODO God willing: import shell components as module for latest AND declare as shared, God willing?
+      // might enable us to at least display this app with latest if directly fetched, God willing.
+      // alternative, iA, is to just move components out of shell?
       new ModuleFederationPlugin({
         name: "signupCore",
         filename: "js/signupCoreEntry.js",
         exposes: {
-          ".": path.join(__dirname, "./src/components/App.js"),
+          ".": path.join(__dirname, "./src/components/AppRouter.js"),
         },
         remotes: {
           "signup-app": "signupApp@",
@@ -91,6 +95,13 @@ module.exports = merge(
             singleton: true,
           },
         },
+      }),
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, "./views/index.html"),
+        filename: "index.html",
+        publicPath: "./",
+        inlineSource: ".(css)$",
+        chunks: ["core"],
       }),
     ],
   },
