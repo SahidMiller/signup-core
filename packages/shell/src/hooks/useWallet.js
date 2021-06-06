@@ -46,8 +46,6 @@ function _useWallet() {
           manifest,
           requestedPluginUpdate: await getRequestedIpfsPath(),
         });
-
-        storeRequestedIpfsPath(undefined);
       }
     }
 
