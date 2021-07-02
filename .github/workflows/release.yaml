@@ -73,7 +73,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
             curl -w 'IPFS Status: %{http_code}\n' --silent --output /dev/null --fail -X POST "http://127.0.0.1:5001/api/v0/refs?r=true&arg=${{ steps.ipfs.outputs[format('{0}-hash', matrix.project.name)] }}"
       - name: Preload IPFS on Public Gateway
